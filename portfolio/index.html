@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Titus Velpula | AI Developer, Auckland</title>
+  <meta name="description" content="AI Developer in Auckland building AI agents, retrieval systems and automation that run in production.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main">
+    <a class="brand" href="index.html">Titus Velpula</a>
+    <div class="nav-links">
+      <a href="#work">What I do</a>
+      <a href="projects.html">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+      <!-- EDIT: put your general CV in the assets folder with this exact file name -->
+      <a class="btn btn-outline btn-sm" href="assets/Titus_Velpula_CV.pdf">Download CV</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="container">
+      <p class="label">AI Developer · Auckland, NZ</p>
+      <h1>I build AI agents and automations that run in production.</h1>
+      <p class="hero-sub">Retrieval systems, multi-agent workflows with evaluation gates, and the integrations that connect them to real business systems. Grounded in a background in data analytics.</p>
+      <div class="btn-row">
+        <a class="btn btn-dark" href="projects.html">View projects</a>
+        <a class="btn btn-outline" href="#contact">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CURRENTLY ===================== -->
+  <section class="section border-top" aria-labelledby="now-h">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="now-h" class="label label-muted">Currently</h2>
+        <!-- EDIT: change this whenever you update the cards below -->
+        <p class="muted" style="font-size:15px">Updated October 2026</p>
+      </div>
+      <div class="grid grid-wide">
+        <div class="card">
+          <p class="label">Contract role</p>
+          <h3>AI Developer at Celtine Ltd</h3>
+          <p class="muted">Building AI agents and automation for customer service, marketing and day-to-day operations in e-commerce.</p>
+        </div>
+        <div class="card">
+          <p class="label">Part-time</p>
+          <h3>Telecare Monitoring Representative</h3>
+          <p class="muted">Responding to emergency alarms at Hato Hone St John, where clear protocols and fast escalation decisions matter.</p>
+        </div>
+        <div class="card">
+          <p class="label">Looking for</p>
+          <h3>AI and automation roles in Auckland</h3>
+          <p class="muted">Full-time preferred. I work directly with business teams to turn manual processes into reliable AI systems.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHAT I DO ===================== -->
+  <section id="work" class="section border-top">
+    <div class="container">
+      <h2 class="label label-muted" style="margin-bottom:40px">What I do</h2>
+      <div class="grid grid-loose">
+        <div class="skill">
+          <h3>Retrieval and RAG</h3>
+          <p class="muted">Question-answering over documents with hybrid BM25 and dense-vector retrieval.</p>
+          <p class="stack">LangChain · ChromaDB · Ollama</p>
+        </div>
+        <div class="skill">
+          <h3>Agents and evaluation</h3>
+          <p class="muted">Multi-agent workflows with tiered evaluation gates, so output is checked before it ships.</p>
+          <p class="stack">LLM-as-judge · RAGAS · DeepEval · LangSmith</p>
+        </div>
+        <div class="skill">
+          <h3>Automation and integration</h3>
+          <p class="muted">Workflows connecting CRM, e-commerce, shipping, inventory and social platforms.</p>
+          <p class="stack">n8n · Docker · Linux · REST</p>
+        </div>
+        <div class="skill">
+          <h3>Data analytics</h3>
+          <p class="muted">Dashboards and analysis that turn raw data into decisions.</p>
+          <p class="stack">SQL · Python · Power BI · SAS</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURED AI PROJECT ===================== -->
+  <section class="dark" aria-labelledby="featured">
+    <div class="container section">
+      <div class="section-head featured-head">
+        <h2 id="featured" class="h-section">Featured AI project</h2>
+        <a href="projects.html#ai" class="link-accent" style="font-weight:500">All AI work</a>
+      </div>
+
+      <div class="split feature">
+        <div class="split-text">
+          <p class="label">Personal project</p>
+          <h3 class="h-feature">Telecare RAG Chatbot</h3>
+          <p class="lead on-dark-muted">Monitoring staff need fast, correct answers about alarm types, triage and escalation. This assistant answers from a process document and says when the documents don't cover a question, instead of guessing.</p>
+          <p class="lead on-dark-muted">It combines keyword search with meaning-based search, so it finds the right passage whether a question uses the document's exact terms or not.</p>
+          <p class="stack">Python · LangChain · BM25 + sentence embeddings · Ollama · Gradio</p>
+          <div class="btn-row" style="margin-top:8px">
+            <a class="btn btn-light" href="projects.html#rag">See how it works</a>
+          </div>
+        </div>
+        <div class="split-panel steps">
+          <div class="steps-title">How it works</div>
+          <div class="step"><span class="step-num">01</span><span>Load the process document and split it into chunks</span></div>
+          <div class="step"><span class="step-num">02</span><span>Index the chunks for keyword and meaning-based search</span></div>
+          <div class="step"><span class="step-num">03</span><span>Retrieve the best matches with both methods combined</span></div>
+          <div class="step"><span class="step-num">04</span><span>Answer only from what was retrieved</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ANALYTICS PROJECTS ===================== -->
+  <section class="section" aria-labelledby="analytics">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="analytics" class="h-section">Analytics projects</h2>
+        <a href="projects.html#analytics" style="font-weight:500">All projects</a>
+      </div>
+      <div class="grid">
+        <a class="project-card" href="projects.html#electricity">
+          <img class="thumb" src="assets/electricity.jpg" alt="NZ electricity dashboard" loading="lazy">
+          <div class="body">
+            <h3>NZ Electricity</h3>
+            <p class="muted">National generation, consumption and losses with year-on-year KPIs.</p>
+            <p class="stack">Power BI · DAX</p>
+          </div>
+        </a>
+        <a class="project-card" href="projects.html#ski">
+          <img class="thumb" src="assets/ski.jpg" alt="Ski resorts planner report" loading="lazy">
+          <div class="body">
+            <h3>Ski Resorts Planner</h3>
+            <p class="muted">499 resorts joined to global snow-cover data in an app-style report.</p>
+            <p class="stack">Power BI · Excel · MySQL</p>
+          </div>
+        </a>
+        <a class="project-card" href="projects.html#attrition">
+          <img class="thumb" src="assets/attrition.jpg" alt="Employee attrition dashboard" loading="lazy">
+          <div class="body">
+            <h3>Employee Attrition</h3>
+            <p class="muted">What drives people to leave, prototyped in SQL and rebuilt as DAX measures.</p>
+            <p class="stack">Power BI · SQL Server · Python</p>
+          </div>
+        </a>
+        <a class="project-card" href="projects.html#pizza">
+          <img class="thumb" src="assets/pizza.jpg" alt="Plato's Pizzeria sales dashboard" loading="lazy">
+          <div class="body">
+            <h3>Plato's Pizzeria Sales</h3>
+            <p class="muted">A year of orders: sales forecast, revenue by table size, and menu recommendations.</p>
+            <p class="stack">Power BI · DAX · Python</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EXPERIENCE ===================== -->
+  <section id="experience" class="section border-top" aria-labelledby="exp-h">
+    <div class="container exp-layout">
+      <h2 id="exp-h" class="h-section">Experience</h2>
+      <div class="exp-list">
+
+        <div class="job">
+          <div class="job-main">
+            <h3>AI Developer (contract)</h3>
+            <p class="muted">Celtine Ltd, Auckland</p>
+            <ul>
+              <li>Map manual processes with operational staff and owners, and break them into steps an agent can own.</li>
+              <li>Automate sales orders, supplier stock checks, out-of-stock notices, dropship tracking and fraud screening across e-commerce, ERP, helpdesk and shipping systems.</li>
+              <li>Write evaluations, investigate production failures and remove silent failures; design for graceful degradation and escalation to staff.</li>
+              <li>Maintain the self-hosted Linux infrastructure behind it (Docker, Cloudflare Tunnel, backups, credentials).</li>
+            </ul>
+          </div>
+          <div class="job-side">
+            <p class="dates">May 2025 to present</p>
+            <ul class="tools" aria-label="Tools used">
+                <li><img src="assets/logos/claude.svg" alt="" width="26" height="26"><span>Claude</span></li>
+                <li><img src="assets/logos/openai.svg" alt="" width="26" height="26"><span>OpenAI</span></li>
+                <li><img src="assets/logos/n8n.svg" alt="" width="26" height="26"><span>n8n</span></li>
+                <li><img src="assets/logos/javascript.svg" alt="" width="26" height="26"><span>JavaScript</span></li>
+                <li><img src="assets/logos/docker.svg" alt="" width="26" height="26"><span>Docker</span></li>
+                <li><img src="assets/logos/linux.svg" alt="" width="26" height="26"><span>Linux</span></li>
+                <li><img src="assets/logos/cloudflare.svg" alt="" width="26" height="26"><span>Cloudflare</span></li>
+                <li><img src="assets/logos/supabase.svg" alt="" width="26" height="26"><span>Supabase</span></li>
+                <li><img src="assets/logos/postgresql.svg" alt="" width="26" height="26"><span>PostgreSQL</span></li>
+                <li><img src="assets/logos/magento.svg" alt="" width="26" height="26"><span>Magento 2</span></li>
+                <li><img src="assets/logos/git.svg" alt="" width="26" height="26"><span>Git</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="job-main">
+            <h3>Telecare Monitoring Representative (part-time)</h3>
+            <p class="muted">Hato Hone St John</p>
+            <p>Respond to emergency alarms, coordinate with customers, responders and support services, and make timely escalation decisions under established protocols.</p>
+          </div>
+          <p class="dates">Oct 2023 to present</p>
+        </div>
+
+        <div class="job">
+          <div class="job-main">
+            <h3>Campaign Developer</h3>
+            <p class="muted">Digital Alchemy</p>
+            <p>Built segmented multi-channel campaigns in Unica Campaign, with pre- and post-campaign analysis in Oracle and SQL.</p>
+          </div>
+          <div class="job-side">
+            <p class="dates">Oct 2021 to Feb 2022</p>
+            <ul class="tools" aria-label="Tools used">
+                <li class="text-only"><b>Unica</b></li>
+                <li class="text-only"><b>Oracle</b></li>
+                <li class="text-only"><b>SQL</b></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="job-main">
+            <h3>Analytics Specialist</h3>
+            <p class="muted">Spark NZ (Skinny Mobile and Broadband)</p>
+            <p>Built Power BI and Tableau dashboards and automated reporting with Alteryx, SQL and Snowflake. Awarded for best customer service.</p>
+          </div>
+          <div class="job-side">
+            <p class="dates">Jan 2021 to Jun 2021</p>
+            <ul class="tools" aria-label="Tools used">
+                <li class="text-only"><b>Power BI</b></li>
+                <li class="text-only"><b>Tableau</b></li>
+                <li class="text-only"><b>Alteryx</b></li>
+                <li><img src="assets/logos/snowflake.svg" alt="" width="26" height="26"><span>Snowflake</span></li>
+                <li class="text-only"><b>SQL</b></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EDUCATION ===================== -->
+  <section id="education" class="section border-top" aria-labelledby="edu-h">
+    <div class="container exp-layout">
+      <h2 id="edu-h" class="h-section">Education</h2>
+      <div class="exp-list">
+
+        <div class="job">
+          <div class="job-main">
+            <h3>Master of Analytics (Honours)</h3>
+            <p class="muted">Auckland University of Technology</p>
+            <p>Thesis: support vector machines to classify stress from EEG data, 86.8% cross-validated accuracy, with the New Zealand College of Chiropractic.</p>
+          </div>
+          <p class="dates">2023 to 2024</p>
+        </div>
+
+        <div class="job">
+          <div class="job-main">
+            <h3>Bachelor of Technology, Computer Science Engineering</h3>
+            <p class="muted">Jawaharlal Nehru Technological University, India</p>
+          </div>
+          <p class="dates">2007 to 2011</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CERTIFICATION ===================== -->
+  <section id="certification" class="section border-top" aria-labelledby="cert-h">
+    <div class="container exp-layout">
+      <h2 id="cert-h" class="h-section">Certification</h2>
+      <div class="exp-list">
+
+        <div class="job">
+          <div class="job-main">
+            <h3>SAS Certified Specialist: Base Programming Using SAS 9.4</h3>
+            <p class="muted">SAS Institute</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" class="accent-band" aria-labelledby="contact-h">
+    <div class="container section contact">
+      <div style="flex:1 1 480px; display:flex; flex-direction:column; gap:16px">
+        <h2 id="contact-h">Let's talk about what you're building.</h2>
+        <p class="lead">Open to AI and automation roles in Auckland.</p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:titusdinkar@gmail.com">titusdinkar@gmail.com</a>
+        <a href="https://www.linkedin.com/in/titus-dinakar-velpula/">LinkedIn</a>
+        <a href="https://github.com/TitusDV">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="container site-footer">© Titus Velpula</footer>
+
+</body>
+</html>

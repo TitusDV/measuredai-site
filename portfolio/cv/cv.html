@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Titus Velpula | CV</title>
+<style>
+@font-face { font-family: Plex; src: url(fonts/ibm-plex-sans-latin-400-normal.woff2); font-weight: 400; }
+@font-face { font-family: Plex; src: url(fonts/ibm-plex-sans-latin-400-italic.woff2); font-weight: 400; font-style: italic; }
+@font-face { font-family: Plex; src: url(fonts/ibm-plex-sans-latin-500-normal.woff2); font-weight: 500; }
+@font-face { font-family: Plex; src: url(fonts/ibm-plex-sans-latin-600-normal.woff2); font-weight: 600; }
+@font-face { font-family: PlexMono; src: url(fonts/ibm-plex-mono-latin-400-normal.woff2); font-weight: 400; }
+@font-face { font-family: PlexMono; src: url(fonts/ibm-plex-mono-latin-500-normal.woff2); font-weight: 500; }
+
+:root {
+  --slate: #15171C;
+  --ink: #1C1F25;
+  --muted: #545A63;
+  --line: #DCDAD3;
+  --accent: #0B6B66;
+  --accent-light: #7FD6CC;
+}
+@page { size: A4; margin: 15mm 0 16mm; }
+@page :first { margin-top: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  padding: 0 17mm;
+  font-family: Plex, Arial, sans-serif; font-size: 9.6pt; line-height: 1.45;
+  color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p, ul { margin: 0; }
+
+/* ---------- Header band ---------- */
+header {
+  background: var(--slate); color: #F6F5F1;
+  margin: 0 -17mm; padding: 13mm 17mm 9mm;
+}
+header h1 { font-size: 27pt; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+.title {
+  margin-top: 5pt; font-family: PlexMono; font-size: 9.5pt; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-light);
+}
+.contact {
+  margin-top: 10pt; padding-top: 8pt; border-top: 0.75pt solid #3A3E46;
+  display: flex; flex-wrap: wrap; gap: 4pt 18pt; font-size: 9pt; color: #C9CCD1;
+}
+.contact a {
+  color: var(--accent-light); text-decoration: underline;
+  text-decoration-thickness: 0.5pt; text-underline-offset: 2pt;
+}
+
+/* ---------- Sections ---------- */
+section { margin-top: 13pt; }
+h2 {
+  display: flex; align-items: center; gap: 8pt;
+  font-family: PlexMono; font-size: 8.5pt; font-weight: 500; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 7pt;
+}
+h2::after { content: ""; flex: 1; height: 0.75pt; background: var(--line); }
+.profile { font-size: 10.2pt; line-height: 1.5; color: var(--ink); }
+
+ul { padding-left: 11pt; }
+li { margin-bottom: 3pt; padding-left: 2pt; }
+li::marker { color: var(--accent); }
+li b, .k { font-weight: 600; color: var(--slate); }
+
+/* Key achievements as a 2 x 2 grid of short cards */
+.wins { display: flex; flex-direction: column; gap: 5pt; }
+.win { border-left: 2pt solid var(--accent); padding: 1pt 0 1pt 8pt; }
+.win b { font-weight: 600; color: var(--slate); }
+
+h2, .role-head { break-after: avoid; }
+li { break-inside: avoid; }
+.role.can-split { break-inside: auto; }
+.skills { display: grid; grid-template-columns: 46mm 1fr; gap: 4pt 10pt; }
+.skills dt { font-weight: 600; color: var(--slate); }
+.skills dd { margin: 0; color: var(--ink); }
+
+/* ---------- Roles ---------- */
+.role { margin-bottom: 10pt; break-inside: avoid; }
+.role-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12pt; margin-bottom: 3pt; }
+.role h3 { font-size: 10.6pt; font-weight: 600; color: var(--slate); }
+.role h3 .org { font-weight: 400; color: var(--muted); }
+.meta { font-family: PlexMono; font-size: 8.2pt; color: var(--muted); white-space: nowrap; }
+.tag {
+  font-family: PlexMono; font-size: 7.5pt; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent); border: 0.75pt solid var(--accent); border-radius: 3pt; padding: 0 4pt; margin-left: 5pt;
+  vertical-align: 1pt;
+}
+.edu p.sub { color: var(--muted); margin-top: 2pt; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Titus Velpula</h1>
+  <p class="title">AI Developer</p>
+  <p class="contact">
+    <span>Auckland, New Zealand</span>
+    <span>022 309 3327</span>
+    <a href="mailto:titusdinkar@gmail.com">titusdinkar@gmail.com</a>
+    <a href="https://www.linkedin.com/in/titus-dinakar-velpula/">linkedin.com/in/titus-dinakar-velpula</a>
+  </p>
+</header>
+
+<section>
+  <h2>Profile</h2>
+  <p class="profile">AI Developer with a data science background, building, testing, and deploying AI agents, automation workflows and API integrations for business operations. At Celtine Ltd, I work directly with operational teams and business owners to identify automation opportunities and deliver reliable solutions, combining business logic with AI and LLMs where they add value. Hands-on experience with JavaScript, SQL, Python and API integrations. I hold a Master of Analytics (Honours).</p>
+</section>
+
+<section>
+  <h2>Key achievements</h2>
+  <div class="wins">
+    <p class="win"><b>Agents in production:</b> Designed and deployed AI agents that classify enquiries, retrieve business data and generate contextual replies, with escalation to staff.</p>
+    <p class="win"><b>Reduced manual work:</b> Automated sales orders, supplier stock checks, out-of-stock handling and dropship tracking across multiple brands.</p>
+    <p class="win"><b>Concept to working system:</b> Built social-media automation connecting product data, AI content generation, media rendering, human review and scheduled publishing.</p>
+    <p class="win"><b>Evaluation and reliability:</b> Built output checks and evaluations to identify failures and compare retrieval accuracy, model performance and cost.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Technical skills</h2>
+  <dl class="skills" style="margin:0">
+    <dt>Development and data</dt><dd>JavaScript, Python, SQL, PostgreSQL, Supabase, Git</dd>
+    <dt>AI engineering</dt><dd>Claude and OpenAI APIs, prompt design, tool calling, structured outputs, context management, multi-agent orchestration, RAG, LangChain, Ollama, ChromaDB</dd>
+    <dt>Evaluation and observability</dt><dd>Deterministic checks, LLM-as-judge, DeepEval, reference datasets, retrieval testing, human review, execution logging, failure detection, cost and latency monitoring</dd>
+    <dt>Integration and infrastructure</dt><dd>n8n, REST/GraphQL APIs, webhooks, authentication, Docker, Linux, Cloudflare Tunnel, credential and environment management, Claude Code, Claude Cowork</dd>
+    <dt>Analytics</dt><dd>Power BI, Tableau, Alteryx, Snowflake, MATLAB, SAS, R, statistics</dd>
+  </dl>
+</section>
+
+<section>
+  <h2>Work experience</h2>
+  <div class="role can-split">
+    <div class="role-head">
+      <h3>AI Developer <span class="org">· Celtine Ltd</span><span class="tag">Contract</span></h3>
+      <span class="meta">May 2025 to present</span>
+    </div>
+    <ul>
+      <li>Collaborate with operational staff and business owners to map manual processes, identify the automatable core, and decompose work into steps an agent can own.</li>
+      <li>Build AI agents and automation with n8n, JavaScript, APIs and webhooks, applying business rules for predictable processing and Claude/OpenAI models where language understanding and generation add value.</li>
+      <li>Automate sales-order processing, supplier stock checks, out-of-stock notifications, dropship tracking and fraud screening by integrating e-commerce, ERP, helpdesk and shipping systems.</li>
+      <li>Write evaluations and validate output; investigate production failures and eliminate silent failures; improve prompts, routing and error handling to strengthen reliability.</li>
+      <li>Design for failure with graceful degradation and escalation to staff; keep prompts and instructions model-agnostic so providers can be swapped without a rewrite.</li>
+      <li>Maintain the self-hosted Linux infrastructure supporting production automation (Docker, Cloudflare Tunnel, backups, credential management).</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Projects</h2>
+  <div class="role">
+    <div class="role-head">
+      <h3>AI social media automation platform <span class="org">· Celtine Ltd</span></h3>
+      <span class="meta">2026 to present</span>
+    </div>
+    <ul>
+      <li>Built a multi-workflow agent system for content generation, media rendering and publishing across Instagram, Facebook, Threads and TikTok, using product and media data from Magento 2 and a Supabase/PostgreSQL layer.</li>
+      <li>Integrate Claude, Creatomate and platform APIs with OAuth token handling, scheduled publishing, evaluation and human review; test media selection, rendering and publishing failures before production rollout.</li>
+    </ul>
+  </div>
+  <div class="role">
+    <div class="role-head">
+      <h3>RAG knowledge assistant <span class="org">· Personal project for Hato Hone St John</span></h3>
+      <span class="meta">2024</span>
+    </div>
+    <ul>
+      <li>Built a local document question-answering assistant in Python using LangChain, Ollama and ChromaDB, combining BM25 keyword search with dense-vector retrieval.</li>
+      <li>Compared chunking strategies and three language models on a synthetic question-and-answer dataset; fine-tuned an embedding model and evaluated retrieval relevance.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Additional work experience</h2>
+  <div class="role">
+    <div class="role-head">
+      <h3>Telecare Monitoring Representative <span class="org">· Hato Hone St John</span><span class="tag">Part-time</span></h3>
+      <span class="meta">Oct 2023 to present</span>
+    </div>
+    <ul>
+      <li>Respond to emergency alarms and coordinate with customers, responders and support services; record incidents accurately and make timely escalation decisions under established protocols.</li>
+    </ul>
+  </div>
+  <div class="role">
+    <div class="role-head">
+      <h3>Campaign Developer <span class="org">· Digital Alchemy</span></h3>
+      <span class="meta">Oct 2021 to Feb 2022</span>
+    </div>
+    <ul>
+      <li>Built multi-channel marketing campaigns in Unica Campaign using customer segmentation; translated business briefs into campaign logic and completed pre- and post-campaign analysis with Oracle and SQL.</li>
+    </ul>
+  </div>
+  <div class="role">
+    <div class="role-head">
+      <h3>Analytics Specialist <span class="org">· Spark NZ (Skinny Mobile and Broadband)</span></h3>
+      <span class="meta">Jan 2021 to Jun 2021</span>
+    </div>
+    <ul>
+      <li>Built Power BI and Tableau dashboards and automated reporting with Alteryx, SQL and Snowflake; worked with product and marketing teams to turn analysis into practical recommendations.</li>
+      <li>Awarded for best customer service.</li>
+      <li>Provided thorough analysis and post-launch support for products and plans.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="edu">
+  <h2>Education and certification</h2>
+  <div class="role">
+    <div class="role-head">
+      <h3>Master of Analytics (Honours) <span class="org">· Auckland University of Technology</span></h3>
+      <span class="meta">2023 to 2024</span>
+    </div>
+    <ul>
+      <li>Studied statistics, machine learning and operations research. Thesis used support vector machines to classify stress from patients' brain EEG data, achieving 89% accuracy and 86.8% cross-validated accuracy, in collaboration with the New Zealand College of Chiropractic.</li>
+    </ul>
+  </div>
+  <div class="role">
+    <div class="role-head">
+      <h3>SAS Certified Specialist: Base Programming Using SAS 9.4</h3>
+    </div>
+  </div>
+  <div class="role">
+    <div class="role-head">
+      <h3>Bachelor of Technology in Computer Science Engineering <span class="org">· Jawaharlal Nehru Technological University, India</span></h3>
+      <span class="meta">2007 to 2011</span>
+    </div>
+    <ul>
+      <li>Advanced OOP concepts, Database Management, SQL, Mathematics, Statistics.</li>
+    </ul>
+  </div>
+</section>
+
+</body>
+</html>
