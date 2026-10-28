@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 
@@ -41,33 +41,37 @@
     </div>
   </section>
 
-  <!-- ===================== CURRENTLY ===================== -->
-  <section class="section border-top" aria-labelledby="now-h">
-    <div class="container">
-      <div class="section-head">
-        <h2 id="now-h" class="label label-muted">Currently</h2>
-        <!-- EDIT: change this whenever you update the cards below -->
-        <p class="muted" style="font-size:15px">Updated October 2026</p>
+  <!-- ===================== FEATURED AI PROJECT ===================== -->
+  <section class="dark" aria-labelledby="featured">
+    <div class="container section">
+      <div class="section-head featured-head">
+        <h2 id="featured" class="h-section">Featured AI project</h2>
+        <a href="projects.html#ai" class="link-accent" style="font-weight:500">All AI work</a>
       </div>
-      <div class="grid grid-wide">
-        <div class="card">
-          <p class="label">Contract role</p>
-          <h3>AI Developer at Celtine Ltd</h3>
-          <p class="muted">Building AI agents and automation for customer service, marketing and day-to-day operations in e-commerce.</p>
+
+      <div class="split feature">
+        <div class="split-text">
+          <p class="label">Personal project · 2026</p>
+          <h3 class="h-feature">RAG Research Assistant</h3>
+          <p class="lead on-dark-muted">Ask questions about five well-known papers on retrieval and RAG. It answers only from the papers, cites the paper and page for every claim, and says when they don't cover a question.</p>
+          <p class="lead on-dark-muted">I didn't just build it, I measured it: three retrievers and four chunk sizes, scored on 36 reviewed test questions, with an LLM reviewer that agreed with my own review 94% of the time.</p>
+          <p class="stack">Python · LangChain · hybrid retrieval · OpenAI · Gradio · pytest</p>
+          <div class="btn-row" style="margin-top:8px">
+            <a class="btn btn-light" href="projects.html#research">See the results</a>
+            <a class="btn btn-outline" style="border-color:var(--bg); color:var(--bg)" href="https://github.com/TitusDV/rag-research-assistant">Code on GitHub</a>
+          </div>
         </div>
-        <div class="card">
-          <p class="label">Part-time</p>
-          <h3>Telecare Monitoring Representative</h3>
-          <p class="muted">Responding to emergency alarms at Hato Hone St John, where clear protocols and fast escalation decisions matter.</p>
-        </div>
-        <div class="card">
-          <p class="label">Looking for</p>
-          <h3>AI and automation roles in Auckland</h3>
-          <p class="muted">Full-time preferred. I work directly with business teams to turn manual processes into reliable AI systems.</p>
+        <div class="split-panel steps">
+          <div class="steps-title">What it showed</div>
+          <div class="step"><span class="step-num">0.79</span><span>Best MRR (BM25), with hybrid close behind at 0.77</span></div>
+          <div class="step"><span class="step-num">97%</span><span>Questions with the right page in the top 5 (BM25, 1000-character chunks)</span></div>
+          <div class="step"><span class="step-num">94%</span><span>Agreement between the LLM reviewer and my own review</span></div>
+          <div class="step"><span class="step-num">256</span><span>Token limit that explained why dense search failed on whole pages</span></div>
         </div>
       </div>
     </div>
   </section>
+
 
   <!-- ===================== WHAT I DO ===================== -->
   <section id="work" class="section border-top">
@@ -77,7 +81,7 @@
         <div class="skill">
           <h3>Retrieval and RAG</h3>
           <p class="muted">Question-answering over documents with hybrid BM25 and dense-vector retrieval.</p>
-          <p class="stack">LangChain · ChromaDB · Ollama</p>
+          <p class="stack">LangChain · sentence-transformers · Ollama</p>
         </div>
         <div class="skill">
           <h3>Agents and evaluation</h3>
@@ -98,35 +102,6 @@
     </div>
   </section>
 
-  <!-- ===================== FEATURED AI PROJECT ===================== -->
-  <section class="dark" aria-labelledby="featured">
-    <div class="container section">
-      <div class="section-head featured-head">
-        <h2 id="featured" class="h-section">Featured AI project</h2>
-        <a href="projects.html#ai" class="link-accent" style="font-weight:500">All AI work</a>
-      </div>
-
-      <div class="split feature">
-        <div class="split-text">
-          <p class="label">Personal project</p>
-          <h3 class="h-feature">Telecare RAG Chatbot</h3>
-          <p class="lead on-dark-muted">Monitoring staff need fast, correct answers about alarm types, triage and escalation. This assistant answers from a process document and says when the documents don't cover a question, instead of guessing.</p>
-          <p class="lead on-dark-muted">It combines keyword search with meaning-based search, so it finds the right passage whether a question uses the document's exact terms or not.</p>
-          <p class="stack">Python · LangChain · BM25 + sentence embeddings · Ollama · Gradio</p>
-          <div class="btn-row" style="margin-top:8px">
-            <a class="btn btn-light" href="projects.html#rag">See how it works</a>
-          </div>
-        </div>
-        <div class="split-panel steps">
-          <div class="steps-title">How it works</div>
-          <div class="step"><span class="step-num">01</span><span>Load the process document and split it into chunks</span></div>
-          <div class="step"><span class="step-num">02</span><span>Index the chunks for keyword and meaning-based search</span></div>
-          <div class="step"><span class="step-num">03</span><span>Retrieve the best matches with both methods combined</span></div>
-          <div class="step"><span class="step-num">04</span><span>Answer only from what was retrieved</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ===================== ANALYTICS PROJECTS ===================== -->
   <section class="section" aria-labelledby="analytics">
@@ -205,15 +180,6 @@
                 <li><img src="assets/logos/git.svg" alt="" width="26" height="26"><span>Git</span></li>
             </ul>
           </div>
-        </div>
-
-        <div class="job">
-          <div class="job-main">
-            <h3>Telecare Monitoring Representative (part-time)</h3>
-            <p class="muted">Hato Hone St John</p>
-            <p>Respond to emergency alarms, coordinate with customers, responders and support services, and make timely escalation decisions under established protocols.</p>
-          </div>
-          <p class="dates">Oct 2023 to present</p>
         </div>
 
         <div class="job">

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 
@@ -41,6 +41,54 @@
     <h2 class="group-title">AI and automation</h2>
     <p class="muted">How I approach AI systems, and a retrieval project of my own.</p>
   </div>
+  <!-- ===================== AI: RAG RESEARCH ASSISTANT ===================== -->
+  <article id="research" class="dark" aria-labelledby="research-h">
+    <div class="container section" style="display:flex; flex-direction:column; gap:40px">
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:24px">
+        <div style="flex:1 1 520px; display:flex; flex-direction:column; gap:16px">
+          <p class="label">AI · Personal project · 2026</p>
+          <h2 id="research-h" class="h-feature">RAG Research Assistant</h2>
+          <p class="lead on-dark-muted">Answers questions about five well-known papers on retrieval and RAG, cites the paper and page for every claim, and says when the papers don't cover a question. My earlier telecare chatbot never measured whether it found the right passages, so this time I measured it.</p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn-light" href="https://github.com/TitusDV/rag-research-assistant">Code on GitHub</a>
+        </div>
+      </div>
+
+      <!-- LIVE DEMO: paste the embed here once the demo is hosted. -->
+
+      <div class="step-grid">
+        <div><span class="step-num">01 Test set</span><span class="on-dark-muted">A model wrote questions from single pages, each with an exact quote as evidence. Questions whose quote wasn't on the page were dropped.</span></div>
+        <div><span class="step-num">02 Review</span><span class="on-dark-muted">I reviewed the first batch by hand, then built an LLM judge with the same rules. It agreed with my decisions on 94% of 36 questions.</span></div>
+        <div><span class="step-num">03 Compare</span><span class="on-dark-muted">BM25, dense and hybrid retrieval on whole pages and on 1000, 500 and 250 character chunks, scored by hit rate and MRR.</span></div>
+        <div><span class="step-num">04 Answer</span><span class="on-dark-muted">Hybrid retrieval feeds six passages to the model, which answers only from them and cites each one. A Gradio app sits on top.</span></div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:32px">
+        <div style="flex:1 1 420px; display:flex; flex-direction:column; gap:12px">
+          <h3 style="font-size:16px; font-weight:600">Results on 36 reviewed questions</h3>
+          <table class="results">
+            <thead><tr><th>Retriever</th><th>Chunk</th><th>Hit@1</th><th>Hit@5</th><th>MRR</th></tr></thead>
+            <tbody>
+              <tr><td>BM25</td><td>page</td><td>0.72</td><td>0.92</td><td>0.788</td></tr>
+              <tr><td>BM25</td><td>1000</td><td>0.69</td><td>0.97</td><td>0.788</td></tr>
+              <tr><td>Hybrid</td><td>250</td><td>0.69</td><td>0.89</td><td>0.768</td></tr>
+              <tr><td>Dense</td><td>250</td><td>0.61</td><td>0.81</td><td>0.688</td></tr>
+              <tr><td>Dense</td><td>page</td><td>0.22</td><td>0.53</td><td>0.359</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="flex:1 1 320px; display:flex; flex-direction:column; gap:12px">
+          <h3 style="font-size:16px; font-weight:600">What I found</h3>
+          <p class="on-dark-muted">With 19 questions, hybrid looked like the winner. With 36 it was level with BM25, which is why the test set needed to grow.</p>
+          <p class="on-dark-muted">Dense retrieval on whole pages was poor because the embedding model only reads the first 256 tokens. Smaller chunks helped a lot.</p>
+          <h3 style="font-size:16px; font-weight:600; margin-top:8px">Stack</h3>
+          <p class="stack on-dark-muted" style="line-height:1.7">Python · LangChain · BM25 · sentence-transformers · OpenAI · Pydantic · Gradio · pytest · GitHub Actions</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
   <section class="container" aria-label="How I build AI systems" style="padding-bottom:24px">
 
     <article id="principles" class="case" aria-labelledby="case4-h">
@@ -88,7 +136,7 @@
         </div>
         <div class="btn-row">
           <a class="btn btn-light" href="https://44bf2b2e-27cf-4b6c-a091-521d38f78934.filesusr.com/ugd/843874_a19e621e56dc4ee3913376821c4a8ec8.pdf">Source document (PDF)</a>
-          <a class="btn btn-outline" style="border-color:var(--bg); color:var(--bg)" href="mailto:titusdinkar@gmail.com?subject=RAG%20chatbot%20code">Code on request</a>
+          <a class="btn btn-outline" style="border-color:var(--bg); color:var(--bg)" href="https://github.com/TitusDV/telecare-rag-chatbot">Code on GitHub</a>
         </div>
       </div>
       <div class="step-grid">

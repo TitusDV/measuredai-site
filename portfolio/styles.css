@@ -332,3 +332,10 @@ details pre { font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; b
   h3.h-feature { font-size: 28px; }
   .group-head { padding-top: 48px; }
 }
+
+/* Results table (RAG Research Assistant) */
+.results { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+.results th, .results td { text-align: left; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.14); }
+.results th { font-weight: 600; color: var(--on-dark-accent); }
+.results td { color: var(--on-dark-muted); }
+.results tbody tr:first-child td, .results tbody tr:nth-child(2) td { color: #FFFFFF; }

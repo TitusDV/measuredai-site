@@ -123,7 +123,7 @@ li { break-inside: avoid; }
   <h2>Technical skills</h2>
   <dl class="skills" style="margin:0">
     <dt>Development and data</dt><dd>JavaScript, Python, SQL, PostgreSQL, Supabase, Git</dd>
-    <dt>AI engineering</dt><dd>Claude and OpenAI APIs, prompt design, tool calling, structured outputs, context management, multi-agent orchestration, RAG, LangChain, Ollama, ChromaDB</dd>
+    <dt>AI engineering</dt><dd>Claude and OpenAI APIs, prompt design, tool calling, structured outputs, context management, multi-agent orchestration, RAG, LangChain, Ollama, hybrid BM25 and dense retrieval</dd>
     <dt>Evaluation and observability</dt><dd>Deterministic checks, LLM-as-judge, DeepEval, reference datasets, retrieval testing, human review, execution logging, failure detection, cost and latency monitoring</dd>
     <dt>Integration and infrastructure</dt><dd>n8n, REST/GraphQL APIs, webhooks, authentication, Docker, Linux, Cloudflare Tunnel, credential and environment management, Claude Code, Claude Cowork</dd>
     <dt>Analytics</dt><dd>Power BI, Tableau, Alteryx, Snowflake, MATLAB, SAS, R, statistics</dd>
@@ -152,6 +152,17 @@ li { break-inside: avoid; }
   <h2>Projects</h2>
   <div class="role">
     <div class="role-head">
+      <h3>RAG research assistant <span class="org">· Personal project · github.com/TitusDV/rag-research-assistant</span></h3>
+      <span class="meta">2026</span>
+    </div>
+    <ul>
+      <li>Built an assistant that answers questions about five AI research papers, cites paper and page for every claim, and says when the papers don&#39;t cover it (LangChain, OpenAI, Gradio).</li>
+      <li>Compared BM25, dense and hybrid retrieval across four chunk sizes on 36 reviewed test questions (best MRR 0.79, hit@5 up to 0.97); traced dense retrieval's drop on long chunks to the embedding model's 256-token limit.</li>
+      <li>Built an LLM judge for test-question review that agreed with my own review 94% of the time; tests run on every push with GitHub Actions.</li>
+    </ul>
+  </div>
+  <div class="role">
+    <div class="role-head">
       <h3>AI social media automation platform <span class="org">· Celtine Ltd</span></h3>
       <span class="meta">2026 to present</span>
     </div>
@@ -162,12 +173,11 @@ li { break-inside: avoid; }
   </div>
   <div class="role">
     <div class="role-head">
-      <h3>RAG knowledge assistant <span class="org">· Personal project for Hato Hone St John</span></h3>
+      <h3>Telecare RAG chatbot <span class="org">· Personal project</span></h3>
       <span class="meta">2024</span>
     </div>
     <ul>
-      <li>Built a local document question-answering assistant in Python using LangChain, Ollama and ChromaDB, combining BM25 keyword search with dense-vector retrieval.</li>
-      <li>Compared chunking strategies and three language models on a synthetic question-and-answer dataset; fine-tuned an embedding model and evaluated retrieval relevance.</li>
+      <li>Built a document question-answering assistant in Python with LangChain, combining BM25 and sentence-embedding search, with a Gradio interface and a local Llama 3 model (Ollama) or OpenAI.</li>
     </ul>
   </div>
 </section>
