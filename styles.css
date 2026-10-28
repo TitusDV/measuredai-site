@@ -65,9 +65,13 @@ a { color: inherit; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
 .brand-text strong { font-size: 17px; font-weight: 700; }
 .brand-text span { font-size: 13px; color: var(--slate); }
-.nav { display: flex; gap: 28px; margin-left: auto; font-size: 15px; font-weight: 500; }
-.nav a { text-decoration: none; color: var(--slate); }
-.nav a:hover { color: var(--ink); }
+.nav { display: flex; align-items: center; gap: 28px; margin-left: auto; font-size: 15px; font-weight: 500; }
+.nav a:not(.btn) { text-decoration: none; color: var(--slate); padding: 6px 0; border-bottom: 2px solid transparent; }
+.nav a:not(.btn):hover { color: var(--ink); }
+.nav a:not(.btn)[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+.nav .nav-cta { color: var(--paper); }
+.nav .nav-cta[aria-current="page"] { background: var(--ink); }
+.menu-btn { display: none; margin-left: auto; font: inherit; font-weight: 600; font-size: 15px; background: var(--mist); color: var(--ink); border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer; }
 
 /* ---------- Hero ---------- */
 .hero { padding: 64px 0 72px; }
@@ -220,8 +224,12 @@ h1 { font-size: clamp(44px, 6vw, 76px); line-height: 0.98; font-weight: 800; let
 @media (max-width: 960px) {
   .hero-grid, .panel, .about-grid, .faq-grid, .contact-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .timeline { grid-template-columns: repeat(2, 1fr); }
-  .nav { display: none; }
-  .head-row { justify-content: space-between; }
+  .menu-btn { display: inline-block; }
+  .head-row { flex-wrap: wrap; height: auto; min-height: 72px; padding-top: 14px; padding-bottom: 14px; gap: 12px; }
+  .nav { display: none; width: 100%; flex-direction: column; align-items: flex-start; gap: 4px; margin: 0; padding: 8px 0 4px; }
+  .nav.is-open { display: flex; }
+  .nav a:not(.btn) { font-size: 17px; padding: 8px 0; }
+  .nav .nav-cta { margin-top: 8px; }
 }
 @media (max-width: 720px) {
   body { font-size: 16px; }
@@ -233,3 +241,12 @@ h1 { font-size: clamp(44px, 6vw, 76px); line-height: 0.98; font-weight: 800; let
   .services > li + li { border-top: 1px solid var(--mist); }
   .site-foot .small { margin-left: 0; }
 }
+
+/* ---------- Inner pages ---------- */
+main.inner > .section:first-child { padding-top: 72px; }
+.services-short { margin-bottom: 36px; }
+.cta-band { background: var(--teal); color: var(--on-teal); padding: 56px 0; }
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 40px; }
+.cta-band .h2 { color: #FFFFFF; font-size: clamp(28px, 3.4vw, 40px); }
+.band + .cta-band { border-top: 1px solid rgba(233, 239, 235, 0.16); }
+h1.h2 { max-width: 22ch; line-height: 1.05; }

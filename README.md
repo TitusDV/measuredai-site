@@ -7,7 +7,8 @@ The front page is my AI consulting site. My portfolio is in `portfolio/` (https:
 Everything is plain HTML and CSS with a little JavaScript, hosted on GitHub Pages. The slideshow pictures on the front page are illustrations of example workflows, not real client systems. The enquiry form doesn't send or store anything; it opens a draft in the visitor's own email app.
 
 ```
-├── index.html      consulting site
+├── index.html      consulting site: home
+├── services.html, practice.html, approach.html, about.html, contact.html
 ├── styles.css
 ├── script.js       slideshow, example tabs and the enquiry form
 ├── images/         slideshow pictures

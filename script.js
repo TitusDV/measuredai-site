@@ -39,9 +39,22 @@
   setPaused(reduced);
 })();
 
+// Menu button on small screens
+(function () {
+  const btn = document.querySelector('.menu-btn');
+  const nav = document.getElementById('site-nav');
+  if (!btn || !nav) return;
+  btn.addEventListener('click', () => {
+    const open = nav.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? 'Close' : 'Menu';
+  });
+})();
+
 // Tabs in "In practice"
 (function () {
   const tabs = [...document.querySelectorAll('[role="tab"]')];
+  if (!tabs.length) return;
   function select(tab) {
     tabs.forEach(t => {
       const on = t === tab;
@@ -59,18 +72,19 @@
   });
 })();
 
-// Buttons that mention a topic pre-select it in the enquiry form
-document.querySelectorAll('[data-topic]').forEach(link => {
-  link.addEventListener('click', () => {
-    const select = document.getElementById('f-topic');
-    const match = [...select.options].find(o => o.text === link.dataset.topic);
-    if (match) select.value = match.text;
-  });
-});
+// Links like contact.html?topic=... pre-select that topic in the enquiry form
+(function () {
+  const select = document.getElementById('f-topic');
+  const topic = new URLSearchParams(window.location.search).get('topic');
+  if (!select || !topic) return;
+  const match = [...select.options].find(o => o.text === topic);
+  if (match) select.value = match.text;
+})();
 
 // Enquiry form: builds an email draft in the visitor's own email app; nothing is sent or stored by the site
 (function () {
   const form = document.getElementById('enquiry');
+  if (!form) return;
   const error = document.getElementById('form-error');
   form.addEventListener('submit', e => {
     e.preventDefault();
