@@ -4,14 +4,13 @@ My website: https://measuredai.co.nz
 
 The front page is my AI consulting site. My portfolio is in `portfolio/` (https://measuredai.co.nz/portfolio/): the AI projects I've built, my analytics work with live Power BI dashboards, my experience and my CV.
 
-Everything is plain HTML and CSS with a little JavaScript, hosted on GitHub Pages. The slideshow pictures on the front page are illustrations of example workflows, not real client systems. The enquiry form doesn't send or store anything; it opens a draft in the visitor's own email app.
+Everything is plain HTML and CSS with a little JavaScript, hosted on GitHub Pages. The slideshow images on the front page are from Unsplash (by Google DeepMind and Rose Pilkington, Apex Virtual Education, Harshit Katiyar, Conny Schneider and Jakub Żerdzicki) and load from Unsplash's servers. The enquiry form doesn't send or store anything; it opens a draft in the visitor's own email app.
 
 ```
 ├── index.html      consulting site: home
 ├── services.html, practice.html, approach.html, about.html, contact.html
 ├── styles.css
 ├── script.js       slideshow, example tabs and the enquiry form
-├── images/         slideshow pictures
 ├── fonts/          Schibsted Grotesk (SIL Open Font License)
 ├── favicon.svg
 ├── portfolio/

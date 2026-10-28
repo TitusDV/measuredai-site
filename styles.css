@@ -87,7 +87,9 @@ h1 { font-size: clamp(44px, 6vw, 76px); line-height: 0.98; font-weight: 800; let
 .slides { display: grid; }
 .slide { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 700ms ease, visibility 0s linear 700ms; }
 .slide.is-active { opacity: 1; visibility: visible; transition: opacity 700ms ease; }
-.slide img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 22px; background: var(--teal); }
+.shot { position: relative; border-radius: 22px; overflow: hidden; background: var(--teal); aspect-ratio: 4 / 3; }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot::after { content: ""; position: absolute; inset: 0; background: rgba(14, 94, 111, 0.08); pointer-events: none; }
 .slide figcaption { margin-top: 14px; font-size: 16px; line-height: 1.45; color: var(--slate); min-height: 3em; }
 .slide figcaption strong { display: block; color: var(--ink); font-size: 18px; }
 .slider-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
