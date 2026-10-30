@@ -1,4 +1,4 @@
-﻿// Slideshow: advances every 6 seconds, pauses on hover or focus, never auto-plays with reduced motion.
+// Slideshow: advances every 6 seconds, pauses on hover or focus, never auto-plays with reduced motion.
 (function () {
   const root = document.getElementById('slider');
   if (!root) return;
