@@ -1,4 +1,4 @@
-// Slideshow: advances every 6 seconds, pauses on hover or focus, never auto-plays with reduced motion.
+﻿// Slideshow: advances every 6 seconds, pauses on hover or focus, never auto-plays with reduced motion.
 (function () {
   const root = document.getElementById('slider');
   if (!root) return;
@@ -105,6 +105,6 @@
     const subject = 'Enquiry: ' + topic + (business ? ' (' + business + ')' : '');
     const body = 'Name: ' + name + '\n' + (business ? 'Business: ' + business + '\n' : '') +
                  'Topic: ' + topic + '\n\n' + message + '\n';
-    window.location.href = 'mailto:titusdinkar@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    window.location.href = 'mailto:titusvelpula@proton.me?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   });
 })();
