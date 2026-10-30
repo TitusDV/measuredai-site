@@ -5,6 +5,7 @@
   const slides = [...root.querySelectorAll('.slide')];
   const dots = [...root.querySelectorAll('.dots button')];
   const pauseBtn = root.querySelector('.pause');
+  const count = root.querySelector('.count');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let current = 0, timer = null, paused = reduced, hovering = false;
 
@@ -12,6 +13,7 @@
     current = (i + slides.length) % slides.length;
     slides.forEach((s, n) => s.classList.toggle('is-active', n === current));
     dots.forEach((d, n) => d.setAttribute('aria-current', n === current ? 'true' : 'false'));
+    if (count) count.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
   }
   function schedule() {
     clearInterval(timer);
