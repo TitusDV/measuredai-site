@@ -145,6 +145,11 @@ h1 { font-size: clamp(44px, 6vw, 76px); line-height: 0.98; font-weight: 800; let
 .step { font-weight: 700; color: var(--teal-2); font-size: 15px; }
 .step::before { content: counter(svc) ". "; }
 .services h3 { font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; }
+/* Arriving from a landing-page link: mark the chosen service */
+.services > li:target { box-shadow: inset 0 4px 0 var(--teal); }
+/* Side by side on wider screens, so keep the page heading in view instead of scrolling past it */
+@media (min-width: 721px) { .services > li { scroll-margin-top: 400px; } }
+.services > li:target h3 { color: var(--teal); }
 .services > li > p:not(.step) { color: #2E4A50; }
 .services ul { padding-left: 18px; color: var(--slate); font-size: 16px; }
 .services ul li { margin-bottom: 4px; }
