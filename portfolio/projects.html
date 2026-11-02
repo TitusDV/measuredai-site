@@ -77,23 +77,46 @@
       </div>
 
       <div style="display:flex; flex-wrap:wrap; gap:32px">
-        <div style="flex:1 1 420px; display:flex; flex-direction:column; gap:12px">
-          <h3 style="font-size:16px; font-weight:600">Results on 36 reviewed questions</h3>
-          <table class="results">
-            <thead><tr><th>Retriever</th><th>Chunk</th><th>Hit@1</th><th>Hit@5</th><th>MRR</th></tr></thead>
+        <div style="flex:1 1 440px; min-width:0; display:flex; flex-direction:column; gap:12px">
+          <h3 style="font-size:16px; font-weight:600">How often the right page was in the top 5 results</h3>
+          <p class="on-dark-muted" style="font-size:14px">36 reviewed questions. Each retriever was tried on whole pages and on passages of 1000, 500 and 250 characters.</p>
+          <table class="results grid5">
+            <thead><tr><th scope="col">Retriever</th><th scope="col">Whole page</th><th scope="col">1000</th><th scope="col">500</th><th scope="col">250</th></tr></thead>
             <tbody>
-              <tr><td>BM25</td><td>page</td><td>0.72</td><td>0.92</td><td>0.788</td></tr>
-              <tr><td>BM25</td><td>1000</td><td>0.69</td><td>0.97</td><td>0.788</td></tr>
-              <tr><td>Hybrid</td><td>250</td><td>0.69</td><td>0.89</td><td>0.768</td></tr>
-              <tr><td>Dense</td><td>250</td><td>0.61</td><td>0.81</td><td>0.688</td></tr>
-              <tr><td>Dense</td><td>page</td><td>0.22</td><td>0.53</td><td>0.359</td></tr>
+              <tr><th scope="row">Keyword (BM25)</th><td>33 of 36</td><td class="best">35 of 36</td><td>32 of 36</td><td>33 of 36</td></tr>
+              <tr><th scope="row">Hybrid</th><td>30 of 36</td><td>32 of 36</td><td class="used">34 of 36</td><td>32 of 36</td></tr>
+              <tr><th scope="row">Embeddings (dense)</th><td>19 of 36</td><td>27 of 36</td><td>30 of 36</td><td>29 of 36</td></tr>
             </tbody>
           </table>
+          <p class="results-key"><span class="key-used"></span>Used in the live demo <span class="key-best"></span>Highest score</p>
+          <details class="results-more" open>
+            <summary>All twelve results, with every measure</summary>
+            <p class="on-dark-muted" style="font-size:13px">Hit@1, @3 and @5: share of questions where the right page was first, in the top 3, or in the top 5. MRR: how high the right page ranked on average (1 means always first).</p>
+            <table class="results">
+              <thead><tr><th>Retriever</th><th>Passage</th><th>Hit@1</th><th>Hit@3</th><th>Hit@5</th><th>MRR</th></tr></thead>
+              <tbody>
+                <tr><td>BM25</td><td>page</td><td>0.72</td><td>0.78</td><td>0.92</td><td>0.788</td></tr>
+                <tr><td>BM25</td><td>1000</td><td>0.69</td><td>0.86</td><td>0.97</td><td>0.788</td></tr>
+                <tr><td>Hybrid</td><td>250</td><td>0.69</td><td>0.81</td><td>0.89</td><td>0.768</td></tr>
+                <tr><td>BM25</td><td>500</td><td>0.67</td><td>0.83</td><td>0.89</td><td>0.760</td></tr>
+                <tr class="used"><td>Hybrid</td><td>500</td><td>0.61</td><td>0.86</td><td>0.94</td><td>0.750</td></tr>
+                <tr><td>BM25</td><td>250</td><td>0.58</td><td>0.86</td><td>0.92</td><td>0.718</td></tr>
+                <tr><td>Hybrid</td><td>1000</td><td>0.56</td><td>0.81</td><td>0.89</td><td>0.701</td></tr>
+                <tr><td>Dense</td><td>250</td><td>0.61</td><td>0.72</td><td>0.81</td><td>0.688</td></tr>
+                <tr><td>Dense</td><td>1000</td><td>0.47</td><td>0.64</td><td>0.75</td><td>0.594</td></tr>
+                <tr><td>Dense</td><td>500</td><td>0.39</td><td>0.69</td><td>0.83</td><td>0.573</td></tr>
+                <tr><td>Hybrid</td><td>page</td><td>0.31</td><td>0.67</td><td>0.83</td><td>0.522</td></tr>
+                <tr><td>Dense</td><td>page</td><td>0.22</td><td>0.42</td><td>0.53</td><td>0.359</td></tr>
+              </tbody>
+            </table>
+          </details>
         </div>
         <div style="flex:1 1 320px; display:flex; flex-direction:column; gap:12px">
           <h3 style="font-size:16px; font-weight:600">What I found</h3>
-          <p class="on-dark-muted">With 19 questions, hybrid looked like the winner. With 36 it was level with BM25, which is why the test set needed to grow.</p>
-          <p class="on-dark-muted">Dense retrieval on whole pages was poor because the embedding model only reads the first 256 tokens. Smaller chunks helped a lot.</p>
+          <p class="on-dark-muted">The demo gives the model six passages, so what matters most is whether the right page is among the top few, not whether it comes first. Hybrid on 500-character passages found it for 34 of 36 questions, second only to keyword search on 1000 characters.</p>
+          <p class="on-dark-muted">Keyword search did well partly because the test questions reuse the papers' own wording. Real visitors won't, which is why the demo keeps the embedding half too.</p>
+          <p class="on-dark-muted">Embeddings on whole pages were poor (19 of 36) because the model only reads the first 256 tokens of a page. Shorter passages fixed most of that.</p>
+          <p class="on-dark-muted">With 36 questions, one question moves a score by about 3 points, so gaps of one or two questions don't mean much.</p>
           <h3 style="font-size:16px; font-weight:600; margin-top:8px">Stack</h3>
           <p class="stack on-dark-muted" style="line-height:1.7">Python · LangChain · BM25 · sentence-transformers · OpenAI · Pydantic · Gradio · pytest · GitHub Actions</p>
         </div>
