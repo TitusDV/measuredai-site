@@ -105,6 +105,6 @@
     const subject = 'Enquiry: ' + topic + (business ? ' (' + business + ')' : '');
     const body = 'Name: ' + name + '\n' + (business ? 'Business: ' + business + '\n' : '') +
                  'Topic: ' + topic + '\n\n' + message + '\n';
-    window.location.href = 'mailto:titusvelpula@proton.me?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    window.location.href = 'mailto:titus@measuredai.co.nz?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   });
 })();
