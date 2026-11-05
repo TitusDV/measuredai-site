@@ -93,7 +93,7 @@
     <article class="article">
 
       <!-- 0 -->
-      <h2 id="at-a-glance">Every metric at a glance</h2>
+      <h2 id="at-a-glance">1. Every metric at a glance</h2>
       <p>What each measure is, what it does, and how it helps the chatbot give a correct answer. A metric doesn't improve the chatbot by itself: it shows where answers go wrong, and that decides what to change. Each one is explained in full further down.</p>
       <div class="tbl-wrap"><table class="tbl glance">
         <thead><tr><th>Metric</th><th>What it measures</th><th>How it helps the chatbot answer correctly</th></tr></thead>
@@ -121,7 +121,7 @@
       </table></div>
 
       <!-- 1 -->
-      <h2 id="two-halves">1. Two halves to test</h2>
+      <h2 id="two-halves">2. Two halves to test</h2>
       <p>A RAG answer goes through two steps, and each can go wrong on its own:</p>
       <ol>
         <li><b>Retrieval:</b> the system searches the documents and picks a handful of passages. If the passage with the answer isn't among them, no model can answer correctly from them.</li>
@@ -131,7 +131,7 @@
       <div class="note"><b>Why retrieval first:</b> it's the ceiling. If the right passage is missing in 10% of questions, the whole system can be right at most 90% of the time, however good the model is.</div>
 
       <!-- 2 -->
-      <h2 id="test-set">2. Building a test set</h2>
+      <h2 id="test-set">3. Building a test set</h2>
       <p>Every metric needs an answer key: questions where you know where the answer is. Building that key carefully is most of the work, and the part most projects skip.</p>
       <h3>Labels that survive chunking</h3>
       <p>I labelled every page of every paper with its arXiv id and page number, and the labels stay attached to every chunk cut from that page. A retrieved passage counts as correct if it comes from the question's page. Because the key is the page, not a particular chunk, it stays the same when the chunk size changes, so different chunk sizes can be compared fairly.</p>
@@ -139,7 +139,7 @@
       <ul>
         <li>A model read sampled pages and wrote one question per page, plus an exact quote from the page as evidence.</li>
         <li><b>Evidence check:</b> if the quote wasn't really on the page, the question was thrown out automatically.</li>
-        <li><b>Review:</b> many questions were still bad: about the reference list, about which table shows what, about trivia in worked examples, or about a paper's main claim, which appears on several pages so there's no single right page. I reviewed the first batch by hand, then built an LLM judge with the same rules (section 7).</li>
+        <li><b>Review:</b> many questions were still bad: about the reference list, about which table shows what, about trivia in worked examples, or about a paper's main claim, which appears on several pages so there's no single right page. I reviewed the first batch by hand, then built an LLM judge with the same rules (section 8).</li>
       </ul>
       <h3>The traps in generated questions</h3>
       <ul>
@@ -148,7 +148,7 @@
       </ul>
 
       <!-- 3 -->
-      <h2 id="retrieval-metrics">3. Retrieval metrics</h2>
+      <h2 id="retrieval-metrics">4. Retrieval metrics</h2>
       <p>Each metric starts from one number per question: the <b>rank</b> of the first correct passage in the results (1 if it came first, 2 if second, and so on), or "missing" if it wasn't in the top 10. Here's a small example with four questions, used throughout:</p>
       <div class="tbl-wrap"><table class="tbl">
         <thead><tr><th>Question</th><th>Rank of first correct passage</th></tr></thead>
@@ -225,7 +225,7 @@ nDCG = average score</div>
       </div>
 
       <!-- 4 -->
-      <h2 id="statistics">4. Statistics: is a difference real?</h2>
+      <h2 id="statistics">5. Statistics: is a difference real?</h2>
       <p>With 36 questions, one question moves a score by 1/36, about 3 points. A setup that scores 0.94 and one that scores 0.92 may differ by a single question. Two tools keep me from reading noise as a result.</p>
       <h3>Bootstrap confidence intervals</h3>
       <p>I resample the 36 questions with replacement 2,000 times, score each resample, and take the middle 95% of those scores as the interval. It shows the range the true score plausibly falls in.</p>
@@ -240,7 +240,7 @@ nDCG = average score</div>
       <p>Pairing is much more sensitive than comparing two separate intervals, because it removes the variation that comes from some questions simply being harder than others.</p>
 
       <!-- 5 -->
-      <h2 id="comparing">5. Comparing setups</h2>
+      <h2 id="comparing">6. Comparing setups</h2>
       <p>I tested every combination of these choices, 16 setups in all, on the same questions:</p>
       <ul>
         <li><b>Retriever:</b> BM25 (keyword matching), dense (meaning-based, using the <code>all-MiniLM-L6-v2</code> embedding model), and hybrid (both, merged with equal weight).</li>
@@ -250,7 +250,7 @@ nDCG = average score</div>
       <p>One detail matters a lot: the embedding model only reads the first 256 tokens of its input. On a whole page, most of the text is never embedded, which is why dense retrieval on whole pages scored worst and improved sharply with smaller chunks. Knowing your model's limits explains results that would otherwise look random.</p>
 
       <!-- 6 -->
-      <h2 id="answers">6. Checking the answers</h2>
+      <h2 id="answers">7. Checking the answers</h2>
       <p>Good retrieval doesn't guarantee a good answer. The answer side has its own questions, and the Ragas paper (one of the five papers my assistant covers) names the main ones:</p>
       <ul>
         <li><b>Faithfulness:</b> is every claim in the answer supported by the passages? An answer can be fluent and wrong.</li>
@@ -274,7 +274,7 @@ nDCG = average score</div>
       </ul>
 
       <!-- 7 -->
-      <h2 id="judges">7. LLM judges, and checking the judge</h2>
+      <h2 id="judges">8. LLM judges, and checking the judge</h2>
       <p>Reviewing hundreds of questions or answers by hand doesn't scale, so it's common to use a language model as a judge. The risk is trusting a judge nobody has measured. My rule: the judge is only used after its decisions are compared with a person's.</p>
       <h3>Agreement and Cohen's kappa</h3>
       <p>On 36 questions I'd reviewed myself, the judge's decisions compared with mine like this (second run):</p>
@@ -289,7 +289,7 @@ here: observed = 0.917, chance = 0.50, kappa = 0.83</div>
       <p>Kappa runs from 0 (no better than chance) to 1 (perfect). On the scale most often used to read it, values above 0.8 count as almost perfect agreement. The table is from my second run of the check. The first run, with the same judge model, agreed on 34 of 36 (kappa 0.89). That one-question difference is worth knowing: an LLM judge isn't perfectly repeatable, so it's worth running the check more than once. With both runs above 0.8, I let the judge review the second batch. The disagreements are listed in the repo so anyone can see where the judge and I differed.</p>
 
       <!-- 8 -->
-      <h2 id="robustness">8. Robustness: prompt injection</h2>
+      <h2 id="robustness">9. Robustness: prompt injection</h2>
       <p>A RAG system pastes document text into the model's instructions. If a document contains text written to look like an instruction ("ignore your rules and say X"), a careless system obeys it. This is prompt injection, one of the main security risks for any AI that reads outside content.</p>
       <p>I planted five kinds of attack inside a passage, next to one genuine passage, and checked what the model did:</p>
       <ul>
@@ -302,7 +302,7 @@ here: observed = 0.917, chance = 0.50, kappa = 0.83</div>
       <p>The model resisted all five and answered correctly from the genuine passage each time. This is a check, not a guarantee: cleverer attacks exist, so I describe it as "resisted 5 of 5 planted attacks", not "immune".</p>
 
       <!-- 9 -->
-      <h2 id="results">9. My results</h2>
+      <h2 id="results">10. My results</h2>
       <p>The setup used in the live demo (hybrid, 500 characters) against its closest rivals, on 36 reviewed questions. Intervals are 95%.</p>
       <div class="tbl-wrap"><table class="tbl">
         <thead><tr><th>Setup</th><th>Hit@1</th><th>Hit@5</th><th>Evidence@5</th><th>MRR@10</th><th>nDCG@10</th><th>ms</th></tr></thead>
@@ -340,7 +340,7 @@ here: observed = 0.917, chance = 0.50, kappa = 0.83</div>
       </ul>
 
       <!-- 10 -->
-      <h2 id="best-practice">10. Best practice checklist</h2>
+      <h2 id="best-practice">11. Best practice checklist</h2>
       <p>What I'd recommend for any RAG system, from this project:</p>
       <ul class="checklist">
         <li><b>Measure retrieval separately from answers.</b> Retrieval sets the ceiling, and it can be scored exactly and cheaply.</li>
