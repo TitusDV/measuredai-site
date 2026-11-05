@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 
@@ -53,6 +53,7 @@
         </div>
         <div class="btn-row">
           <a class="btn btn-light" href="https://github.com/TitusDV/rag-research-assistant">Code on GitHub</a>
+          <a class="btn btn-outline" style="border-color:var(--bg); color:var(--bg)" href="rag-evaluation.html">How I evaluated it</a>
         </div>
       </div>
 
@@ -71,8 +72,8 @@
 
       <div class="step-grid">
         <div><span class="step-num">01 Test set</span><span class="on-dark-muted">A model wrote questions from single pages, each with an exact quote as evidence. Questions whose quote wasn't on the page were dropped.</span></div>
-        <div><span class="step-num">02 Review</span><span class="on-dark-muted">I reviewed the first batch by hand, then built an LLM judge with the same rules. It agreed with my decisions on 94% of 36 questions.</span></div>
-        <div><span class="step-num">03 Compare</span><span class="on-dark-muted">BM25, dense and hybrid retrieval on whole pages and on 1000, 500 and 250 character chunks, scored by hit rate and MRR.</span></div>
+        <div><span class="step-num">02 Review</span><span class="on-dark-muted">I reviewed the first batch by hand, then built an LLM judge with the same rules. In two runs it agreed with my decisions on 34 and 33 of 36 questions (Cohen's kappa 0.89 and 0.83).</span></div>
+        <div><span class="step-num">03 Compare</span><span class="on-dark-muted">BM25, dense, hybrid and reranked hybrid retrieval on whole pages and on 1000, 500 and 250 character passages, with confidence intervals and question-by-question comparisons.</span></div>
         <div><span class="step-num">04 Answer</span><span class="on-dark-muted">Hybrid retrieval feeds six passages to the model, which answers only from them and cites each one. A Gradio app sits on top.</span></div>
       </div>
 
@@ -90,33 +91,39 @@
           </table>
           <p class="results-key"><span class="key-used"></span>Used in the live demo <span class="key-best"></span>Highest score</p>
           <details class="results-more" open>
-            <summary>All twelve results, with every measure</summary>
-            <p class="on-dark-muted" style="font-size:13px">Hit@1, @3 and @5: share of questions where the right page was first, in the top 3, or in the top 5. MRR: how high the right page ranked on average (1 means always first).</p>
-            <table class="results">
-              <thead><tr><th>Retriever</th><th>Passage</th><th>Hit@1</th><th>Hit@3</th><th>Hit@5</th><th>MRR</th></tr></thead>
+            <summary>All sixteen results, with every measure</summary>
+            <p class="on-dark-muted" style="font-size:13px">Hit@1 and @5: share of questions where the right page was first, or in the top 5. Evidence@5: stricter, the top-5 passage must also contain the question's whole evidence quote, matched on whole words. MRR and nDCG: how high the right page ranked (1 means always first; nDCG gives more credit to ranks 2 and 3). ms: retrieval time per question on my laptop.</p>
+            <div class="scroll-x"><table class="results">
+              <thead><tr><th>Retriever</th><th>Passage</th><th>Hit@1</th><th>Hit@5</th><th>Evid@5</th><th>MRR</th><th>nDCG</th><th>ms</th></tr></thead>
               <tbody>
-                <tr><td>BM25</td><td>page</td><td>0.72</td><td>0.78</td><td>0.92</td><td>0.788</td></tr>
-                <tr><td>BM25</td><td>1000</td><td>0.69</td><td>0.86</td><td>0.97</td><td>0.788</td></tr>
-                <tr><td>Hybrid</td><td>250</td><td>0.69</td><td>0.81</td><td>0.89</td><td>0.768</td></tr>
-                <tr><td>BM25</td><td>500</td><td>0.67</td><td>0.83</td><td>0.89</td><td>0.760</td></tr>
-                <tr class="used"><td>Hybrid</td><td>500</td><td>0.61</td><td>0.86</td><td>0.94</td><td>0.750</td></tr>
-                <tr><td>BM25</td><td>250</td><td>0.58</td><td>0.86</td><td>0.92</td><td>0.718</td></tr>
-                <tr><td>Hybrid</td><td>1000</td><td>0.56</td><td>0.81</td><td>0.89</td><td>0.701</td></tr>
-                <tr><td>Dense</td><td>250</td><td>0.61</td><td>0.72</td><td>0.81</td><td>0.688</td></tr>
-                <tr><td>Dense</td><td>1000</td><td>0.47</td><td>0.64</td><td>0.75</td><td>0.594</td></tr>
-                <tr><td>Dense</td><td>500</td><td>0.39</td><td>0.69</td><td>0.83</td><td>0.573</td></tr>
-                <tr><td>Hybrid</td><td>page</td><td>0.31</td><td>0.67</td><td>0.83</td><td>0.522</td></tr>
-                <tr><td>Dense</td><td>page</td><td>0.22</td><td>0.42</td><td>0.53</td><td>0.359</td></tr>
+                <tr><td>BM25</td><td>page</td><td>0.72</td><td>0.92</td><td>0.92</td><td>0.788</td><td>0.832</td><td>2</td></tr>
+                <tr><td>BM25</td><td>1000</td><td>0.69</td><td>0.97</td><td>0.83</td><td>0.788</td><td>0.839</td><td>2</td></tr>
+                <tr><td>Hybrid + rerank</td><td>500</td><td>0.69</td><td>0.89</td><td>0.58</td><td>0.777</td><td>0.830</td><td>869</td></tr>
+                <tr><td>Hybrid</td><td>250</td><td>0.69</td><td>0.89</td><td>0.42</td><td>0.768</td><td>0.804</td><td>34</td></tr>
+                <tr><td>BM25</td><td>500</td><td>0.67</td><td>0.89</td><td>0.61</td><td>0.760</td><td>0.811</td><td>4</td></tr>
+                <tr><td>Hybrid + rerank</td><td>250</td><td>0.67</td><td>0.83</td><td>0.39</td><td>0.754</td><td>0.793</td><td>515</td></tr>
+                <tr class="used"><td>Hybrid</td><td>500</td><td>0.61</td><td>0.94</td><td>0.61</td><td>0.750</td><td>0.806</td><td>30</td></tr>
+                <tr><td>Hybrid + rerank</td><td>1000</td><td>0.67</td><td>0.86</td><td>0.69</td><td>0.746</td><td>0.799</td><td>1514</td></tr>
+                <tr><td>BM25</td><td>250</td><td>0.58</td><td>0.92</td><td>0.36</td><td>0.718</td><td>0.774</td><td>5</td></tr>
+                <tr><td>Hybrid</td><td>1000</td><td>0.56</td><td>0.89</td><td>0.78</td><td>0.701</td><td>0.773</td><td>26</td></tr>
+                <tr><td>Dense</td><td>250</td><td>0.61</td><td>0.81</td><td>0.39</td><td>0.688</td><td>0.730</td><td>26</td></tr>
+                <tr><td>Hybrid + rerank</td><td>page</td><td>0.47</td><td>0.72</td><td>0.72</td><td>0.598</td><td>0.668</td><td>2363</td></tr>
+                <tr><td>Dense</td><td>1000</td><td>0.47</td><td>0.75</td><td>0.56</td><td>0.594</td><td>0.658</td><td>22</td></tr>
+                <tr><td>Dense</td><td>500</td><td>0.39</td><td>0.83</td><td>0.50</td><td>0.573</td><td>0.657</td><td>24</td></tr>
+                <tr><td>Hybrid</td><td>page</td><td>0.31</td><td>0.83</td><td>0.83</td><td>0.522</td><td>0.619</td><td>23</td></tr>
+                <tr><td>Dense</td><td>page</td><td>0.22</td><td>0.53</td><td>0.53</td><td>0.359</td><td>0.432</td><td>21</td></tr>
               </tbody>
-            </table>
+            </table></div>
           </details>
         </div>
         <div style="flex:1 1 320px; display:flex; flex-direction:column; gap:12px">
           <h3 style="font-size:16px; font-weight:600">What I found</h3>
-          <p class="on-dark-muted">The demo gives the model six passages, so what matters most is whether the right page is among the top few, not whether it comes first. Hybrid on 500-character passages found it for 34 of 36 questions, second only to keyword search on 1000 characters.</p>
-          <p class="on-dark-muted">Keyword search did well partly because the test questions reuse the papers' own wording. Real visitors won't, which is why the demo keeps the embedding half too.</p>
-          <p class="on-dark-muted">Embeddings on whole pages were poor (19 of 36) because the model only reads the first 256 tokens of a page. Shorter passages fixed most of that.</p>
-          <p class="on-dark-muted">With 36 questions, one question moves a score by about 3 points, so gaps of one or two questions don't mean much.</p>
+          <p class="on-dark-muted">No setup is clearly better than the one the demo uses. Compared question by question with 95% intervals, every rival's difference could be chance. Only embeddings alone and whole-page hybrid are clearly worse.</p>
+          <p class="on-dark-muted">A cross-encoder reranker put the right passage first more often (Hit@1 0.61 to 0.69) but dropped others out of the top 5, and made retrieval about 30 times slower. I left it out of the demo. These Evidence figures use a corrected exact-match rule; an earlier version over-credited partial matches.</p>
+          <p class="on-dark-muted">Checking the passage, not just the page, showed a trade-off: 1000-character passages held the evidence quote more often than 500 (78% against 61% in the top 5), partly because smaller passages are more likely to cut the quote in two. On the held-out questions the pattern didn't hold (60% for 500, 50% for 1000), so the demo stays at 500.</p>
+          <p class="on-dark-muted">Keyword search did well partly because the test questions reuse the papers' wording. Embeddings on whole pages were poor because the model only reads the first 256 tokens.</p>
+          <p class="on-dark-muted"><b style="color:#FFFFFF">Held-out check.</b> On ten AI-assisted held-out questions, with evidence checked against the PDFs and kept out of choosing the demo's setup, keyword search on 1000 characters (joint best before) fell clearly behind the demo's hybrid setup in ranking (MRR 0.47 against 0.75), so its earlier lead didn't carry over. The reranker found all ten, but with so few questions that gain could still be chance.</p>
+          <p><a class="link-accent" href="rag-evaluation.html#at-a-glance">What each metric means and how it helps the chatbot answer correctly →</a></p>
           <h3 style="font-size:16px; font-weight:600; margin-top:8px">Stack</h3>
           <p class="stack on-dark-muted" style="line-height:1.7">Python · LangChain · BM25 · sentence-transformers · OpenAI · Pydantic · Gradio · pytest · GitHub Actions</p>
         </div>

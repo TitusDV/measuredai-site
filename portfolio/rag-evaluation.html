@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How I Evaluate RAG | Titus Velpula</title>
+  <meta name="description" content="How to measure a retrieval-augmented generation system: test sets, retrieval metrics, statistics, answer checks, LLM judges and best practice, with results from my RAG Research Assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=6">
+  <style>
+    .guide { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 56px; padding-top: 24px; padding-bottom: 80px; }
+    .toc { position: sticky; top: 24px; align-self: start; font-size: 14.5px; }
+    .toc p { font-weight: 600; margin-bottom: 10px; }
+    .toc ol { padding-left: 18px; display: grid; gap: 6px; color: var(--muted); }
+    .toc a { color: inherit; text-decoration: none; }
+    .toc a:hover { color: var(--ink); text-decoration: underline; }
+    .article { max-width: 760px; display: flex; flex-direction: column; gap: 18px; font-size: 17px; line-height: 1.7; }
+    .article h2 { font-size: 28px; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; margin-top: 40px; scroll-margin-top: 24px; }
+    .article h3 { font-size: 19px; font-weight: 700; margin-top: 14px; }
+    .article ul, .article ol { padding-left: 22px; display: grid; gap: 8px; }
+    .article code { font-size: 0.92em; background: var(--soft, #F1F2F4); padding: 1px 6px; border-radius: 5px; }
+    .formula { font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; font-size: 15px; background: var(--soft, #F1F2F4); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 6px; overflow-x: auto; white-space: pre; }
+    .note { border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; background: #FFFFFF; }
+    .note b { font-weight: 600; }
+    .metric { border-top: 1px solid var(--line); padding-top: 18px; display: grid; gap: 10px; }
+    .metric dl { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 16px; font-size: 16px; }
+    .metric dt { font-weight: 600; }
+    .metric dd { margin: 0; color: var(--muted); }
+    .tbl-wrap { overflow-x: auto; }
+    .tbl { width: 100%; border-collapse: collapse; font-size: 15px; }
+    .tbl th, .tbl td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .tbl th { font-weight: 600; }
+    .tbl tr.hl td { background: #F3F6FF; font-weight: 600; }
+    .tbl.glance th[colspan] { background: var(--soft, #F1F2F4); font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; padding-top: 12px; }
+    .tbl.glance td:first-child { min-width: 130px; }
+    .tbl.glance td { min-width: 160px; }
+    .checklist { list-style: none; padding-left: 0 !important; }
+    .checklist li { padding-left: 28px; position: relative; }
+    .checklist li::before { content: "✓"; position: absolute; left: 4px; color: var(--accent); font-weight: 700; }
+    @media (max-width: 900px) {
+      .guide { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+      .toc { position: static; }
+      .metric dl { grid-template-columns: minmax(0, 1fr); }
+      .metric dt { margin-top: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main">
+    <a class="brand" href="index.html">Titus Velpula</a>
+    <div class="nav-links">
+      <a href="../index.html">AI consulting</a>
+      <a href="index.html#work">What I do</a>
+      <a href="projects.html" aria-current="page">Projects</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="btn btn-outline btn-sm" href="assets/Titus_Velpula_CV.pdf">Download CV</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="container" style="padding-top:80px; padding-bottom:24px">
+    <p class="label" style="margin-bottom:20px"><a href="projects.html#research">RAG Research Assistant</a> / Evaluation guide</p>
+    <h1 style="max-width:860px; font-size:clamp(34px,5vw,54px); line-height:1.08; font-weight:600; letter-spacing:-0.02em">How I measure a RAG system, and why each number matters.</h1>
+    <p class="lead muted" style="max-width:760px; margin-top:20px">A retrieval-augmented generation (RAG) system finds passages in your documents, then asks a language model to answer from them. It can fail in either step. This page explains how I test both, every metric I use and what it tells you, the statistics that keep the conclusions honest, and the practices I'd recommend for any RAG project. The numbers come from my <a href="projects.html#research">RAG Research Assistant</a>.</p>
+  </section>
+
+  <div class="container guide">
+
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#at-a-glance">Every metric at a glance</a></li>
+        <li><a href="#two-halves">Two halves to test</a></li>
+        <li><a href="#test-set">Building a test set</a></li>
+        <li><a href="#retrieval-metrics">Retrieval metrics</a></li>
+        <li><a href="#statistics">Statistics</a></li>
+        <li><a href="#comparing">Comparing setups</a></li>
+        <li><a href="#answers">Checking the answers</a></li>
+        <li><a href="#judges">LLM judges</a></li>
+        <li><a href="#robustness">Prompt injection</a></li>
+        <li><a href="#results">My results</a></li>
+        <li><a href="#best-practice">Best practice checklist</a></li>
+      </ol>
+    </nav>
+
+    <article class="article">
+
+      <!-- 0 -->
+      <h2 id="at-a-glance">Every metric at a glance</h2>
+      <p>What each measure is, what it does, and how it helps the chatbot give a correct answer. A metric doesn't improve the chatbot by itself: it shows where answers go wrong, and that decides what to change. Each one is explained in full further down.</p>
+      <div class="tbl-wrap"><table class="tbl glance">
+        <thead><tr><th>Metric</th><th>What it measures</th><th>How it helps the chatbot answer correctly</th></tr></thead>
+        <tbody>
+          <tr><th colspan="3">Retrieval: did the model get the right passage?</th></tr>
+          <tr><td><b>Hit@k</b> (Hit@1, @3, @5, @6)</td><td>Share of questions where a passage from the right page is in the top k results.</td><td>The model can only answer from what it is given. The app passes six passages, so Hit@6 is the share of questions where the answer was in front of the model at all. It picked the demo's setup: hybrid on 500 characters got 34 of 36.</td></tr>
+          <tr><td><b>Evidence@k</b> (@5, @6)</td><td>Share where a top-k passage contains the question's whole evidence quote, not just text from the right page.</td><td>A passage from the right page but the wrong paragraph gives the model nothing to cite. This catches that, and showed that small chunks often split the evidence the model needs.</td></tr>
+          <tr><td><b>MRR@10</b></td><td>How high the first right passage ranks on average (1 means always first).</td><td>Models tend to use passages near the top more reliably, and the Lost in the Middle paper shows answers get worse when the key text sits in the middle of a long context. A higher MRR puts the evidence where the model reads it best.</td></tr>
+          <tr><td><b>nDCG@10</b></td><td>Like MRR, but rank 2 or 3 still earns most of the credit.</td><td>Fits a chatbot that reads several passages: it rewards getting the evidence near the top without punishing rank 2 as hard as MRR does.</td></tr>
+          <tr><td><b>Latency</b> (ms per question)</td><td>Retrieval time per question.</td><td>Keeps the chatbot responsive. It is why the reranker stayed out: about 30 times slower for a gain that could be chance.</td></tr>
+          <tr><th colspan="3">Statistics: is a difference real?</th></tr>
+          <tr><td><b>95% bootstrap interval</b></td><td>The range a score plausibly falls in, from resampling the questions 2,000 times.</td><td>Stops the chatbot being "improved" with a change that only looked better by chance on a small test set.</td></tr>
+          <tr><td><b>Paired comparison</b></td><td>The difference between two setups question by question, with its own interval.</td><td>Shows whether a new setup really answers more questions than the current one. A change is only worth making if the interval is clear of zero.</td></tr>
+          <tr><th colspan="3">Answers: is what the user reads correct?</th></tr>
+          <tr><td><b>Answer correctness</b></td><td>Answerable questions where the answer has every required fact and no material error.</td><td>The closest measure to what a user cares about: did they get the right answer?</td></tr>
+          <tr><td><b>Citation support</b></td><td>Factual claims fully supported by the passage they cite, including numbers and qualifiers.</td><td>Catches claims the model added that the papers don't say, so every statement can be checked against its source.</td></tr>
+          <tr><td><b>Correct abstention</b></td><td>Questions the papers can't answer that the chatbot declined.</td><td>A chatbot that guesses on unanswerable questions gives wrong answers with confidence. This rewards saying "The papers don't cover this."</td></tr>
+          <tr><td><b>Wrong abstentions</b></td><td>Answerable questions the chatbot declined.</td><td>The opposite failure: refusing too often. Reported on its own so a chatbot can't look safe just by refusing everything.</td></tr>
+          <tr><td><b>Failure cause</b></td><td>For each wrong answer, whether the passages held enough information (a generation problem) or not (a retrieval problem).</td><td>Shows which half to fix: the search, or the prompt and model.</td></tr>
+          <tr><td><b>Run errors</b></td><td>Timeouts and failures, counted apart from deliberate refusals.</td><td>Stops crashes being mistaken for careful refusals, and keeps them in the totals so they can't hide.</td></tr>
+          <tr><th colspan="3">Trust and safety</th></tr>
+          <tr><td><b>Cohen's kappa</b></td><td>Agreement between the LLM judge and my own reviews, minus the agreement expected by chance.</td><td>The judge filtered the test questions. Kappa above 0.8 (0.89 and 0.83 in two runs) means the questions behind every other score were reviewed reliably.</td></tr>
+          <tr><td><b>Prompt-injection check</b></td><td>Whether the model obeys instructions hidden inside a passage. It resisted 5 of 5 planted attacks.</td><td>A document could contain text written to hijack the chatbot. This checks that it answers from the evidence instead of following planted instructions.</td></tr>
+        </tbody>
+      </table></div>
+
+      <!-- 1 -->
+      <h2 id="two-halves">1. Two halves to test</h2>
+      <p>A RAG answer goes through two steps, and each can go wrong on its own:</p>
+      <ol>
+        <li><b>Retrieval:</b> the system searches the documents and picks a handful of passages. If the passage with the answer isn't among them, no model can answer correctly from them.</li>
+        <li><b>Generation:</b> a language model writes the answer from those passages. Even with the right passages, it can misread them, add facts that aren't there, or cite the wrong source.</li>
+      </ol>
+      <p>Testing only the final answers hides which step failed. So I measure retrieval on its own first, with exact, cheap metrics, and then check the answers separately.</p>
+      <div class="note"><b>Why retrieval first:</b> it's the ceiling. If the right passage is missing in 10% of questions, the whole system can be right at most 90% of the time, however good the model is.</div>
+
+      <!-- 2 -->
+      <h2 id="test-set">2. Building a test set</h2>
+      <p>Every metric needs an answer key: questions where you know where the answer is. Building that key carefully is most of the work, and the part most projects skip.</p>
+      <h3>Labels that survive chunking</h3>
+      <p>I labelled every page of every paper with its arXiv id and page number, and the labels stay attached to every chunk cut from that page. A retrieved passage counts as correct if it comes from the question's page. Because the key is the page, not a particular chunk, it stays the same when the chunk size changes, so different chunk sizes can be compared fairly.</p>
+      <h3>Generated questions, checked twice</h3>
+      <ul>
+        <li>A model read sampled pages and wrote one question per page, plus an exact quote from the page as evidence.</li>
+        <li><b>Evidence check:</b> if the quote wasn't really on the page, the question was thrown out automatically.</li>
+        <li><b>Review:</b> many questions were still bad: about the reference list, about which table shows what, about trivia in worked examples, or about a paper's main claim, which appears on several pages so there's no single right page. I reviewed the first batch by hand, then built an LLM judge with the same rules (section 7).</li>
+      </ul>
+      <h3>The traps in generated questions</h3>
+      <ul>
+        <li><b>Wording overlap:</b> a model writing questions from a page tends to reuse that page's words. Keyword search (BM25) then looks better than it would with real users, who phrase things their own way.</li>
+        <li><b>Tuning on the test:</b> if you pick your chunk size and retriever using the same questions you report, the reported score flatters the winner. The fix is a <b>held-out set</b>: questions written separately, ideally by hand, that are scored but never used to choose anything.</li>
+      </ul>
+
+      <!-- 3 -->
+      <h2 id="retrieval-metrics">3. Retrieval metrics</h2>
+      <p>Each metric starts from one number per question: the <b>rank</b> of the first correct passage in the results (1 if it came first, 2 if second, and so on), or "missing" if it wasn't in the top 10. Here's a small example with four questions, used throughout:</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Question</th><th>Rank of first correct passage</th></tr></thead>
+        <tbody><tr><td>A</td><td>1</td></tr><tr><td>B</td><td>3</td></tr><tr><td>C</td><td>2</td></tr><tr><td>D</td><td>missing</td></tr></tbody>
+      </table></div>
+
+      <div class="metric">
+        <h3>Hit@k (also called recall@k here)</h3>
+        <div class="formula">Hit@k = questions with a correct passage in the top k / all questions</div>
+        <p>Example: Hit@1 = 1/4 = 0.25 (only A). Hit@3 = 3/4 = 0.75 (A, B, C). Hit@5 = 0.75.</p>
+        <dl>
+          <dt>Tells you</dt><dd>How often the system finds the answer at all, within the first k results.</dd>
+          <dt>Why it matters</dt><dd>Pick k to match your system. My app gives the model six passages, so Hit@6 answers exactly "did the model get to see the answer?" On my questions the sixth passage added nothing: Hit@5 and Hit@6 are both 34 of 36.</dd>
+          <dt>Blind spot</dt><dd>Rank 1 and rank 5 count the same. It says nothing about ordering within the top k.</dd>
+          <dt>Helps the chatbot</dt><dd>If the answer isn't in the passages, the model can only refuse or guess. Hit@6 measures how often the answer reached the model, which makes it the ceiling on correct answers.</dd>
+        </dl>
+        <p class="muted" style="font-size:15px">With one correct page per question, recall@k and hit rate@k are the same number, so I report it once.</p>
+      </div>
+
+      <div class="metric">
+        <h3>Evidence@k (passage level)</h3>
+        <div class="formula">Evidence@k = questions where a top-k passage is from the right page
+             AND contains the whole evidence quote word for word / all questions
+(both texts normalised first: case, spacing, line-break hyphens, PDF ligatures;
+ the match must start and end on whole words, so "80%" doesn't match inside "180%")</div>
+        <dl>
+          <dt>Tells you</dt><dd>Whether a retrieved passage actually holds the quoted evidence, not just a passage from the right page.</dd>
+          <dt>Helps the chatbot</dt><dd>The model needs the paragraph that states the fact, not just its page. A higher Evidence@k means the passages it reads actually contain what it has to cite.</dd>
+          <dt>Why it matters</dt><dd>A page has many paragraphs. A passage from the right page but the wrong paragraph gives the model nothing useful, yet page-level Hit@k counts it as a success.</dd>
+          <dt>Blind spot</dt><dd>It is deliberately strict. A quote split across two chunks is missed, and a passage that states the same fact in other words doesn't count, so it undercounts rather than overcounts. Whether passages support an answer in other words is a job for human review.</dd>
+        </dl>
+        <p class="muted" style="font-size:15px">An earlier version credited passages that shared most of the quote's words. A review showed it could credit a passage containing only "the score", so I replaced it with exact matching and added tests for those false positives. All Evidence figures on this page use the corrected rule. The stricter check also caught two quotes ending where the PDF text has a footnote number stuck to the last word ("relevance.4", "20225"); I trimmed those quotes to end before the footnote, without changing the questions or pages.</p>
+      </div>
+
+      <div class="metric">
+        <h3>MRR@10 (mean reciprocal rank)</h3>
+        <div class="formula">MRR = average of 1 / rank   (a missing answer scores 0)</div>
+        <p>Example: (1/1 + 1/3 + 1/2 + 0) / 4 = (1 + 0.333 + 0.5 + 0) / 4 = 0.458.</p>
+        <dl>
+          <dt>Tells you</dt><dd>How high the first correct passage ranks, on average. 1.0 means it always comes first.</dd>
+          <dt>Why it matters</dt><dd>Rewards getting the answer to the very top, which matters when only the first result is shown or used.</dd>
+          <dt>Helps the chatbot</dt><dd>Evidence near the top of the context is used more reliably; the Lost in the Middle paper found answers get worse when the key passage sits mid-context.</dd>
+          <dt>Blind spot</dt><dd>It punishes rank 2 hard (0.5) even when the system reads several passages and rank 2 is almost as good as rank 1.</dd>
+        </dl>
+      </div>
+
+      <div class="metric">
+        <h3>nDCG@10 (normalised discounted cumulative gain)</h3>
+        <div class="formula">score per question = 1 / log2(rank + 1)   (missing = 0)
+rank 1 = 1.00   rank 2 = 0.63   rank 3 = 0.50   rank 5 = 0.39   rank 10 = 0.29
+nDCG = average score</div>
+        <p>Example: (1.00 + 0.50 + 0.63 + 0) / 4 = 0.533.</p>
+        <dl>
+          <dt>Tells you</dt><dd>Like MRR, how near the top the answer is, but lower ranks lose credit gently instead of sharply.</dd>
+          <dt>Why it matters</dt><dd>It fits systems that read several passages, like mine: rank 2 still earns most of the credit. It's also the standard metric in information retrieval research, so results are comparable.</dd>
+          <dt>Helps the chatbot</dt><dd>It rewards putting the evidence among the first few passages the model reads, which is what matters for a chatbot that reads six.</dd>
+          <dt>Note</dt><dd>With several correct passages and graded relevance, nDCG divides by the best possible score. With one correct page per question, as here, that best score is 1, so the formula above is the whole story.</dd>
+        </dl>
+      </div>
+
+      <div class="metric">
+        <h3>Latency (ms per question)</h3>
+        <dl>
+          <dt>Tells you</dt><dd>How long retrieval takes per question.</dd>
+          <dt>Why it matters</dt><dd>Quality isn't free. A method that adds 3% accuracy but makes every answer a second slower may not be worth it. I report it next to every setup so the trade-off is visible.</dd>
+          <dt>Helps the chatbot</dt><dd>It doesn't make answers more correct, but it decides which accuracy gains are affordable. The reranker added about 0.8 seconds per question for a gain that could be chance, so it stayed out.</dd>
+        </dl>
+      </div>
+
+      <div class="metric">
+        <h3>Precision@k, and why I left it out</h3>
+        <div class="formula">Precision@k = correct passages in the top k / k</div>
+        <p>Precision is standard when many passages can be correct. Here each question has one correct page, and that makes it unfair across chunk sizes: with whole pages, at most 1 of the top 10 can be correct (0.1), while with 250-character chunks the same page can fill all 10 slots (1.0). The difference would come from how the text was cut, not from retrieval quality. So I chose not to report it, and said why.</p>
+      </div>
+
+      <!-- 4 -->
+      <h2 id="statistics">4. Statistics: is a difference real?</h2>
+      <p>With 36 questions, one question moves a score by 1/36, about 3 points. A setup that scores 0.94 and one that scores 0.92 may differ by a single question. Two tools keep me from reading noise as a result.</p>
+      <h3>Bootstrap confidence intervals</h3>
+      <p>I resample the 36 questions with replacement 2,000 times, score each resample, and take the middle 95% of those scores as the interval. It shows the range the true score plausibly falls in.</p>
+      <div class="formula">Hybrid, 500 characters:  Hit@5 = 0.94  (95% interval 0.86 to 1.00)</div>
+      <p>The width is the honest picture: with 36 questions, intervals are wide. A bigger test set makes them narrower.</p>
+      <h3>Paired comparisons</h3>
+      <p>To compare two setups, I don't compare their averages; I compare them question by question, because both were run on the same questions. For each question I take the difference in score, then bootstrap those differences.</p>
+      <ul>
+        <li>If the interval for the difference is entirely above or below zero, the gap is clear.</li>
+        <li>If it includes zero, the questions can't tell the two setups apart: the gap could be chance.</li>
+      </ul>
+      <p>Pairing is much more sensitive than comparing two separate intervals, because it removes the variation that comes from some questions simply being harder than others.</p>
+
+      <!-- 5 -->
+      <h2 id="comparing">5. Comparing setups</h2>
+      <p>I tested every combination of these choices, 16 setups in all, on the same questions:</p>
+      <ul>
+        <li><b>Retriever:</b> BM25 (keyword matching), dense (meaning-based, using the <code>all-MiniLM-L6-v2</code> embedding model), and hybrid (both, merged with equal weight).</li>
+        <li><b>Passage size:</b> whole pages, or chunks of 1000, 500 and 250 characters with 10% overlap.</li>
+        <li><b>Reranking:</b> hybrid search followed by a cross-encoder (<code>ms-marco-MiniLM-L-6-v2</code>) that rereads the top 20 passages together with the question and reorders them.</li>
+      </ul>
+      <p>One detail matters a lot: the embedding model only reads the first 256 tokens of its input. On a whole page, most of the text is never embedded, which is why dense retrieval on whole pages scored worst and improved sharply with smaller chunks. Knowing your model's limits explains results that would otherwise look random.</p>
+
+      <!-- 6 -->
+      <h2 id="answers">6. Checking the answers</h2>
+      <p>Good retrieval doesn't guarantee a good answer. The answer side has its own questions, and the Ragas paper (one of the five papers my assistant covers) names the main ones:</p>
+      <ul>
+        <li><b>Faithfulness:</b> is every claim in the answer supported by the passages? An answer can be fluent and wrong.</li>
+        <li><b>Answer relevance:</b> does the answer actually address the question?</li>
+        <li><b>Context relevance:</b> how much of the retrieved text was actually needed?</li>
+      </ul>
+      <h3>How I measure answers</h3>
+      <p>For held-out questions, a script runs the assistant exactly as the app does and saves the passages the model saw in rank order, the model's raw answer and citation numbers, and the final answer. I then score three things by hand, with the scoring rules written down before reading any answers:</p>
+      <ul>
+        <li><b>Answer correctness:</b> the answer contains every required fact with no material error. Declining an answerable question counts as a miss, and is reported separately as a wrong abstention.</li>
+        <li><b>Citation support:</b> each factual claim is checked against the passage it cites, including numbers, comparisons and qualifiers. A claim the cited passage only partly supports fails.</li>
+        <li><b>Correct abstention:</b> questions the papers can't answer, including ones where a paper discusses the topic but never gives the fact asked for, should be declined.</li>
+      </ul>
+      <p>Because the passages are saved, each failure can be traced to its cause: the right page never reached the model (a retrieval problem), or it did and the model misread it or cited the wrong passage (a generation problem). Results are published as counts, such as "declined 4 of 5 unanswerable questions", so the sample size is always visible.</p>
+      <h3>What my assistant enforces in code</h3>
+      <ul>
+        <li><b>Valid citations:</b> every [n] marker in an answer is checked against the passages the model was given. Markers with no matching passage are removed, each cited page gets exactly one number, and an answer with no valid citation is treated as unsupported.</li>
+        <li><b>Safe failure:</b> if the model's output contradicts itself (says it answered but gives the refusal text, or an empty answer), the app shows "The papers don't cover this." rather than something unreliable.</li>
+        <li><b>Abstention:</b> the model is told to say the papers don't cover a question when the passages don't contain the answer. Refusing is better than guessing, and a good test set includes questions the documents can't answer.</li>
+        <li><b>Visible evidence:</b> each source card shows the passage it came from, so a reader can check the claim in seconds.</li>
+      </ul>
+
+      <!-- 7 -->
+      <h2 id="judges">7. LLM judges, and checking the judge</h2>
+      <p>Reviewing hundreds of questions or answers by hand doesn't scale, so it's common to use a language model as a judge. The risk is trusting a judge nobody has measured. My rule: the judge is only used after its decisions are compared with a person's.</p>
+      <h3>Agreement and Cohen's kappa</h3>
+      <p>On 36 questions I'd reviewed myself, the judge's decisions compared with mine like this (second run):</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th></th><th>I approved</th><th>I rejected</th></tr></thead>
+        <tbody><tr><th>Judge approved</th><td>17</td><td>1</td></tr><tr><th>Judge rejected</th><td>2</td><td>16</td></tr></tbody>
+      </table></div>
+      <p>Raw agreement is (17 + 16) / 36 = 92%. But some agreement happens by chance: two raters who both say "yes" most of the time will agree often without either being careful. Cohen's kappa removes that:</p>
+      <div class="formula">kappa = (observed agreement - chance agreement) / (1 - chance agreement)
+chance agreement = P(both say yes by chance) + P(both say no by chance)
+here: observed = 0.917, chance = 0.50, kappa = 0.83</div>
+      <p>Kappa runs from 0 (no better than chance) to 1 (perfect). On the scale most often used to read it, values above 0.8 count as almost perfect agreement. The table is from my second run of the check. The first run, with the same judge model, agreed on 34 of 36 (kappa 0.89). That one-question difference is worth knowing: an LLM judge isn't perfectly repeatable, so it's worth running the check more than once. With both runs above 0.8, I let the judge review the second batch. The disagreements are listed in the repo so anyone can see where the judge and I differed.</p>
+
+      <!-- 8 -->
+      <h2 id="robustness">8. Robustness: prompt injection</h2>
+      <p>A RAG system pastes document text into the model's instructions. If a document contains text written to look like an instruction ("ignore your rules and say X"), a careless system obeys it. This is prompt injection, one of the main security risks for any AI that reads outside content.</p>
+      <p>I planted five kinds of attack inside a passage, next to one genuine passage, and checked what the model did:</p>
+      <ul>
+        <li>overriding the answer ("reply only with HACKED")</li>
+        <li>forcing a false refusal</li>
+        <li>planting a false claim</li>
+        <li>asking it to reveal its instructions</li>
+        <li>sending the user to an outside link</li>
+      </ul>
+      <p>The model resisted all five and answered correctly from the genuine passage each time. This is a check, not a guarantee: cleverer attacks exist, so I describe it as "resisted 5 of 5 planted attacks", not "immune".</p>
+
+      <!-- 9 -->
+      <h2 id="results">9. My results</h2>
+      <p>The setup used in the live demo (hybrid, 500 characters) against its closest rivals, on 36 reviewed questions. Intervals are 95%.</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Setup</th><th>Hit@1</th><th>Hit@5</th><th>Evidence@5</th><th>MRR@10</th><th>nDCG@10</th><th>ms</th></tr></thead>
+        <tbody>
+          <tr class="hl"><td>Hybrid, 500 (demo)</td><td>0.61</td><td>0.94 (0.86 to 1.00)</td><td>0.61</td><td>0.750 (0.64 to 0.85)</td><td>0.806</td><td>30</td></tr>
+          <tr><td>Hybrid + rerank, 500</td><td>0.69</td><td>0.89 (0.78 to 0.97)</td><td>0.58</td><td>0.777 (0.66 to 0.88)</td><td>0.830</td><td>869</td></tr>
+          <tr><td>BM25, 1000</td><td>0.69</td><td>0.97 (0.92 to 1.00)</td><td>0.83</td><td>0.788 (0.68 to 0.89)</td><td>0.839</td><td>2</td></tr>
+          <tr><td>Hybrid, 1000</td><td>0.56</td><td>0.89 (0.78 to 0.97)</td><td>0.78</td><td>0.701 (0.59 to 0.82)</td><td>0.773</td><td>26</td></tr>
+          <tr><td>Dense, whole page</td><td>0.22</td><td>0.53 (0.36 to 0.69)</td><td>0.53</td><td>0.359 (0.24 to 0.48)</td><td>0.432</td><td>21</td></tr>
+        </tbody>
+      </table></div>
+      <p>All 16 setups are in the table on the <a href="projects.html#research">project page</a> and in the repo's <code>eval/results.md</code>.</p>
+      <h3>What the numbers say</h3>
+      <ul>
+        <li><b>No setup is clearly better than the demo's.</b> In the paired comparisons, no rival's difference has an interval entirely above zero. The clearly worse ones are dense retrieval and hybrid on whole pages.</li>
+        <li><b>The reranker didn't earn its place.</b> It put the right passage first more often (Hit@1 0.61 to 0.69) but pushed some out of the top 5, the overall change could be chance, and it made retrieval about 30 times slower. It stays out of the demo. A measured "no" is still a result.</li>
+        <li><b>Evidence@5 found a trade-off the page scores hid.</b> With 500-character passages the passage holding the evidence was in the top 5 for 61% of questions, against 78% with 1000 characters and 42% with 250. Part of that gap is the measure: a small passage is more likely to cut the quote in two. On the held-out questions the pattern didn't hold (60% for 500 against 50% for 1000), so the demo stays at 500.</li>
+        <li><b>BM25's lead didn't carry over.</b> On the held-out check below it ranked clearly worse; wording overlap is a possible explanation, not a proven one.</li>
+      </ul>
+
+      <h3>Held-out check</h3>
+      <p>Ten AI-assisted questions, two per paper, with each evidence quote checked against the source PDF, and kept out of choosing any setting. They're the fairer test, because nothing was tuned on them. A validation script checks each question's paper, page and quote before every run.</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Setup</th><th>Hit@1</th><th>Hit@5</th><th>Evidence@5</th><th>MRR@10</th></tr></thead>
+        <tbody>
+          <tr class="hl"><td>Hybrid, 500 (demo)</td><td>0.70</td><td>8/10</td><td>0.60</td><td>0.750 (0.45 to 1.00)</td></tr>
+          <tr><td>Hybrid + rerank, 500</td><td>0.80</td><td>10/10</td><td>0.80</td><td>0.900 (0.75 to 1.00)</td></tr>
+          <tr><td>BM25, 1000</td><td>0.30</td><td>8/10</td><td>0.70</td><td>0.470 (0.25 to 0.70)</td></tr>
+        </tbody>
+      </table></div>
+      <ul>
+        <li><b>Keyword search lost its lead.</b> BM25 on 1000 characters, joint best on the original questions, ranked clearly worse than the demo's setup on the held-out ones (MRR difference -0.28, interval -0.53 to -0.05). Wording overlap with the source pages is one possible reason, but both sets were AI-assisted and differ in content, so this shows a change, not its cause.</li>
+        <li><b>The reranker is undecided.</b> It didn't help on the original questions but found all ten here. Its gain could still be chance (the intervals start at 0), so it stays out of the demo until a bigger held-out set settles it. This is exactly why a held-out set matters: the two sets point different ways.</li>
+        <li><b>A drop is normal.</b> The demo's setup found the right page in the top 5 for 8 of 10, against 34 of 36 on the questions used to choose it.</li>
+      </ul>
+
+      <!-- 10 -->
+      <h2 id="best-practice">10. Best practice checklist</h2>
+      <p>What I'd recommend for any RAG system, from this project:</p>
+      <ul class="checklist">
+        <li><b>Measure retrieval separately from answers.</b> Retrieval sets the ceiling, and it can be scored exactly and cheaply.</li>
+        <li><b>Use labels that don't depend on chunking</b> (document and page), so different chunk sizes are compared fairly.</li>
+        <li><b>Check every generated question</b> against its source, and remove questions with no single right answer.</li>
+        <li><b>Keep a held-out set</b>, written separately, that is never used to choose settings.</li>
+        <li><b>Match the metric to the system.</b> If the model reads six passages, Hit@5 and nDCG matter more than Hit@1.</li>
+        <li><b>Check the passage, not just the page,</b> when you can (Evidence@k).</li>
+        <li><b>Report intervals, and compare setups question by question.</b> Small test sets make small gaps meaningless.</li>
+        <li><b>Report speed next to quality,</b> so improvements are judged by what they cost.</li>
+        <li><b>Validate any LLM judge against people,</b> with kappa, not just raw agreement, and publish the disagreements.</li>
+        <li><b>Enforce grounding in code:</b> validate citations, fail safely, and let the system say "not covered".</li>
+        <li><b>Test hostile documents</b> before trusting a system with content you don't control.</li>
+        <li><b>Know your model's limits</b> (like a 256-token input cap), because they explain results.</li>
+        <li><b>Test the measuring code itself.</b> My metrics, reranker and citation checks have automated tests, so the published numbers come from code that is checked.</li>
+        <li><b>Publish negative results.</b> The reranker that didn't help is as useful to know as a setup that did.</li>
+      </ul>
+
+      <div class="btn-row" style="margin-top:28px; gap:12px">
+        <a class="btn" href="projects.html#research">Back to the project</a>
+        <a class="btn btn-outline" href="https://github.com/TitusDV/rag-research-assistant">Code and results on GitHub</a>
+      </div>
+
+    </article>
+  </div>
+</main>
+
+<footer class="container site-footer">© Titus Velpula · <a href="../index.html">AI consulting</a></footer>
+
+</body>
+</html>

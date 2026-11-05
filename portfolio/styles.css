@@ -351,6 +351,7 @@ details pre { font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; b
 .results-more summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--on-dark-accent); padding: 6px 0; background: transparent; }
 .results-more summary:hover { color: #FFFFFF; }
 .results-more table { margin-top: 8px; }
+.scroll-x { overflow-x: auto; max-width: 100%; }
 @media (max-width: 560px) {
   .results th, .results td, .results tbody th { padding: 7px 5px; font-size: 12px; }
   .grid5 td { white-space: normal; }
